@@ -8,7 +8,15 @@ namespace Kernel;
 
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Twig\Environment;
 
+/**
+ * Base controller
+ *
+ * @author Christophe Daloz - De Los Rios
+ * @version 1.0
+ * @package Kernel
+ */
 class Controller
 {
     /**
@@ -19,5 +27,26 @@ class Controller
     public function __construct(ContainerBuilder $container)
     {
         $this->container = $container;
+
+        $explode = explode('\\', get_called_class());
+
+        for ($i=0; $i < count($explode); $i++) {
+            if ($explode[$i] === 'Controller') {
+                $this->container->get('twig.loader')->addPath(
+                    sprintf('src/Bundle/%s/web/template', $explode[$i-1]),
+                    $explode[$i-1]
+                );
+                break;
+            }
+        }
+    }
+
+    /**
+     * @return Renderer
+     * @throws \Exception
+     */
+    public function getTemplate()
+    {
+        return new Renderer($this->container->get('twig.environment'));
     }
 }
