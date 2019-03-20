@@ -5,6 +5,7 @@
  */
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 $injection = require_once 'config/parameters.php';
 
@@ -16,12 +17,26 @@ if (isset($injection['parameter'])) {
     foreach ($injection['parameter'] as $key => $val) {
         $container->setParameter($key, $val);
     }
-} elseif (isset($injection['service'])) {
+}
+
+if (isset($injection['service'])) {
     foreach ($injection['service'] as $id => $array) {
         $def = $container->register($id, $array['class']);
 
         if (isset($array['arguments'])) {
-            $def->setArguments($array['arguments']);
+            $i = 0;
+
+            foreach ($array['arguments'] as $argument) {
+                if (!is_array($argument)) {
+                    if (substr($argument, 0, 1) === '@') {
+                        $def->setArgument($i, new Reference(substr($argument, 1)));
+                    } else {
+                        $def->setArgument($i, $argument);
+                    }
+                }
+
+                $i++;
+            }
         }
     }
 }
