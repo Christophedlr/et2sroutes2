@@ -1,0 +1,37 @@
+<header>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand">
+                <img src="web/images/logo.png" alt="Logo" class="img-md-fluid" width="20%">
+            </a>
+
+            <button class="navbar-toggler ml-10" data-toggle="collapse" data-target="#navbar-content">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-content">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Forum</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Inscription</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Connexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+        {% if breadcrumb is defined and breadcrumb is not null and breadcrum is not empty %}
+            {% for element in breadcrumb %}
+                {% if loop.last %}
+                    <li class="breadcrumb-item active">{{ element.name }}</li>
+                {% else %}
+                    <li><a href="{{ element.link }}">{{ element.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Accueil</li>
+        </ol>
+    </nav>
+        {% endif %}
+</header>
