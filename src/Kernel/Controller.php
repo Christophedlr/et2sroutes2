@@ -7,6 +7,7 @@
 namespace Kernel;
 
 
+use Kernel\TwigExtension\AssetExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Twig\Environment;
 
@@ -39,6 +40,8 @@ class Controller
                 break;
             }
         }
+
+        $this->container->get('twig.environment')->addExtension(new AssetExtension($this->container));
     }
 
     /**
