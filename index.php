@@ -13,6 +13,7 @@ require_once  'src/Kernel/DependencyInjection.php';
 
 $request = Request::createFromGlobals();
 $container->register('request', $request);
+$container->set('router', $router);
 
 $match = $router->match();
 $explode = explode(':', $match['target']);
