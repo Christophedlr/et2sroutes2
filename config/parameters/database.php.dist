@@ -9,5 +9,6 @@ return [
     'database.port' => 3306,
     'database.user' => '',
     'database.password' => '',
-    'database.name' => ''
+    'database.name' => '',
+    'database.driver' => 'pdo_mysql',
 ];

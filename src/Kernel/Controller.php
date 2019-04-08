@@ -7,6 +7,10 @@
 namespace Kernel;
 
 
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Tools\Setup;
 use Kernel\TwigExtension\AssetExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Twig\Environment;
@@ -42,6 +46,7 @@ class Controller
         }
 
         $this->container->get('twig.environment')->addExtension(new AssetExtension($this->container));
+        $this->getDoctrine();
     }
 
     /**
@@ -51,5 +56,40 @@ class Controller
     public function getTemplate()
     {
         return new Renderer($this->container->get('twig.environment'));
+    }
+
+    /**
+     * @return Configuration
+     * @throws \Exception
+     */
+    public function getDoctrine()
+    {
+        if (!$this->container->has('doctrine')) {
+            $this->container->set('doctrine', Setup::createAnnotationMetadataConfiguration(['src']));
+        }
+
+        return $this->container->get('doctrine');
+    }
+
+    /**
+     * @return EntityManager
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function getEntityManager()
+    {
+        if (!$this->container->has('entity')) {
+            $database['host'] = $this->container->getParameter('database.host');
+            $database['user'] = $this->container->getParameter('database.user');
+            $database['password'] = $this->container->getParameter('database.password');
+            $database['driver'] = $this->container->getParameter('database.driver');
+            $database['port'] = $this->container->getParameter('database.port');
+            $database['dbname'] = $this->container->getParameter('database.name');
+
+            $em = EntityManager::create($database, $this->getDoctrine());
+            $em->getConfiguration()->setMetadataDriverImpl(AnnotationDriver::create(['src']));
+            $this->container->set('entity', $em);
+        }
+
+        return $this->container->get('entity');
     }
 }
