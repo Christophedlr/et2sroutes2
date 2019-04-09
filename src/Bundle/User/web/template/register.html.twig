@@ -5,7 +5,7 @@
 {% block title %}Inscription d'un utilisateur{% endblock %}
 
 {% block body %}
-    <form action="#" method="POST">
+    <form action="http://localhost:8000/user/register" method="POST">
         <div class="form-group">
             <label for="login">Nom d'utilisateur :</label>
             <input type="text" id="login" maxlength="50" name="form[login]" class="form-control" required>
@@ -13,12 +13,17 @@
 
         <div class="form-group">
             <label for="password">Mot de passe :</label>
-            <input type="text" id="password" maxlength="50" name="form[password]" class="form-control" required>
+            <input type="password" id="password" maxlength="50" name="form[password]" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="password_confirm">Confirmer le mot de passe :</label>
-            <input type="text" id="password_confirm" maxlength="50" name="form[password_confirm]" class="form-control" required>
+            <input type="password" id="password_confirm" maxlength="50" name="form[password_confirm]" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mail">E-mail :</label>
+            <input type="email" id="mail" maxlength="50" name="form[mail]" class="form-control" required>
         </div>
 
         <button type="submit" class="btn btn-primary">S'inscrire</button>

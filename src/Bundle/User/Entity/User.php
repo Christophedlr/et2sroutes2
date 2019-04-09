@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="user")
+ * @ORM\HasLifecycleCallbacks
  */
 class User
 {
@@ -54,6 +55,17 @@ class User
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $lastConnection;
+
+    public function __construct()
+    {
+        $this
+            ->setLogin('')
+            ->setPassword('')
+            ->setMail('')
+            ->setPlainPassword('')
+            ->setRegisterDate(new \DateTime())
+            ->setLastConnection(new \DateTime());
+    }
 
     /**
      * @return integer
@@ -134,7 +146,7 @@ class User
     /**
      * @return string
      */
-    public function getMail()
+    public function getMail(): string
     {
         return $this->mail;
     }
@@ -143,7 +155,7 @@ class User
      * @param string $mail
      * @return User
      */
-    public function setMail($mail)
+    public function setMail(string $mail)
     {
         $this->mail = $mail;
 
@@ -151,17 +163,18 @@ class User
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getRegisterDate()
+    public function getRegisterDate(): \DateTime
     {
         return $this->registerDate;
     }
 
     /**
-     * @param string $registerDate
+     * @param \DateTime $registerDate
+     * @return User
      */
-    public function setRegisterDate($registerDate)
+    public function setRegisterDate(\DateTime $registerDate)
     {
         $this->registerDate = $registerDate;
 
@@ -169,20 +182,32 @@ class User
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getLastConnection()
+    public function getLastConnection(): \DateTime
     {
         return $this->lastConnection;
     }
 
     /**
-     * @param string $lastConnection
+     * @param \DateTime $lastConnection
+     * @return User
      */
-    public function setLastConnection($lastConnection)
+    public function setLastConnection(\DateTime $lastConnection)
     {
         $this->lastConnection = $lastConnection;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updatePassword()
+    {
+        if (!empty($this->getPlainPassword())) {
+            $this->setPassword(password_hash($this->getPlainPassword(), PASSWORD_BCRYPT));
+            $this->setPlainPassword('');
+        }
     }
 }
