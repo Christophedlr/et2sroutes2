@@ -15,6 +15,7 @@ try {
         ->setRoute('/user/register')
         ->setController('Bundle\\User:UserController:registerAction')
         ->addMethod('GET')
+        ->addMethod('POST')
     ;
 } catch (Exception $e) {
     return $e->getMessage();
