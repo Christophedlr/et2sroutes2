@@ -8,6 +8,7 @@ namespace Bundle\User\Controller;
 
 
 use Bundle\User\Entity\User;
+use Bundle\User\Validator\RegisterValidator;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +16,11 @@ class UserController extends Controller
 {
     public function registerAction(Request $request)
     {
-        if ($request->request->has('form')) {
+        $validator = new RegisterValidator($request);
+        var_dump($validator->validate());
+        var_dump($validator->getErrors());
+
+        /*if ($request->request->has('form')) {
             $form = $request->request->get('form');
 
             $user = new User();
@@ -30,8 +35,11 @@ class UserController extends Controller
             $em = $this->getEntityManager();
             $em->persist($user);
             $em->flush();
-        }
+        }*/
 
-        return $this->getTemplate()->renderResponse('@User/register.html.twig');
+        return $this->getTemplate()->renderResponse('@User/register.html.twig', [
+            'errors' => $validator->getErrors(),
+            'form' => $request->request->get('form', []),
+        ]);
     }
 }

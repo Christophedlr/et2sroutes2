@@ -8,22 +8,42 @@
     <form action="http://localhost:8000/user/register" method="POST">
         <div class="form-group">
             <label for="login">Nom d'utilisateur :</label>
-            <input type="text" id="login" maxlength="50" name="form[login]" class="form-control" required>
+            <input type="text" id="login" maxlength="50"
+                   name="form[login]" class="form-control {% if errors.login is defined %} is-invalid {% endif %}"
+                   value="{% if form.login is defined %}{{ form.login }}{% endif %}" required>
+            {% for login in errors.login %}
+                <div class="invalid-feedback">{{ login }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
             <label for="password">Mot de passe :</label>
-            <input type="password" id="password" maxlength="50" name="form[password]" class="form-control" required>
+            <input type="password" id="password" maxlength="50"
+                   name="form[password]" class="form-control {% if errors.password is defined %} is-invalid {% endif %}"
+                   required>
+            {% for password in errors.password %}
+                <div class="invalid-feedback">{{ password }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
             <label for="password_confirm">Confirmer le mot de passe :</label>
-            <input type="password" id="password_confirm" maxlength="50" name="form[password_confirm]" class="form-control" required>
+            <input type="password" id="password_confirm" maxlength="50"
+                   name="form[password_confirm]" class="form-control {% if errors.password is defined %} is-invalid {% endif %}"
+                   required>
+            {% for password in errors.password_confirm %}
+                <div class="invalid-feedback">{{ password }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
             <label for="mail">E-mail :</label>
-            <input type="email" id="mail" maxlength="50" name="form[mail]" class="form-control" required>
+            <input type="email" id="mail" maxlength="50"
+                   name="form[mail]" class="form-control {% if errors.mail is defined %} is-invalid {% endif %}"
+                   value="{% if form.mail is defined %}{{ form.mail }}{% endif %}" required>
+            {% for mail in errors.mail %}
+                <div class="invalid-feedback">{{ mail }}</div>
+            {% endfor %}
         </div>
 
         <button type="submit" class="btn btn-primary">S'inscrire</button>
