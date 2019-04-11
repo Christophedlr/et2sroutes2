@@ -13,7 +13,11 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\Setup;
 use Kernel\TwigExtension\AssetExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Twig\Environment;
+use Twig\TwigFunction;
 
 /**
  * Base controller
@@ -45,8 +49,14 @@ class Controller
             }
         }
 
-        $this->container->get('twig.environment')->addExtension(new AssetExtension($this->container));
+        /** @var Environment $twig */
+        $twig = $this->container->get('twig.environment');
+
+        $twig->addExtension(new AssetExtension($this->container));
+        $twig->addGlobal('flashBag', $this->getFlashBag());
+
         $this->getDoctrine();
+        $this->getSession()->start();
     }
 
     /**
@@ -91,5 +101,34 @@ class Controller
         }
 
         return $this->container->get('entity');
+    }
+
+    /**
+     * @return Session
+     * @throws \Exception
+     */
+    public function getSession()
+    {
+        return $this->container->get('session');
+    }
+
+    /**
+     * @return FlashBag
+     * @throws \Exception
+     */
+    public function getFlashBag()
+    {
+        return $this->getSession()->getFlashBag();
+    }
+
+    /**
+     * @param string $route
+     * @param array $params
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function redirectToRoute(string $route, array $params = [])
+    {
+        return new RedirectResponse($this->container->get('router')->generate($route, $params));
     }
 }

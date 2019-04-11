@@ -13,6 +13,17 @@
     <body class="container-fluid">
         {% include 'header.html.twig' %}
 
+        {% for type, messages in flashBag.all() %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {{ message|raw }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         {% if title is defined and title is not null and title is not empty %}
         <div class="row">
             <h1 class="ml-auto mr-auto">{{ title }}</h1>
