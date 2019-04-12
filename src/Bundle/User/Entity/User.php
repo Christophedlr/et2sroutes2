@@ -47,6 +47,16 @@ class User
     private $mail;
 
     /**
+     * @ORM\Column(type="string", length=13, nullable=true, unique=true)
+     */
+    private $code;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $active;
+
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $registerDate;
@@ -64,7 +74,8 @@ class User
             ->setMail('')
             ->setPlainPassword('')
             ->setRegisterDate(new \DateTime())
-            ->setLastConnection(new \DateTime());
+            ->setLastConnection(new \DateTime())
+            ->setActive(false);
     }
 
     /**
@@ -209,5 +220,40 @@ class User
             $this->setPassword(password_hash($this->getPlainPassword(), PASSWORD_BCRYPT));
             $this->setPlainPassword('');
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     * @return User
+     */
+    public function setCode(string $code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
     }
 }

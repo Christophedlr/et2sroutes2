@@ -1,0 +1,22 @@
+{{ user.login }},
+
+<p>
+    Merci pour votre inscription sur ETS2Routes.<br>
+    Afin de confirmer votre inscription, merci de cliquer<br>
+    sur le lien de validation ci-dessous :<br>
+    <a href="{{ pathab('user_register_confirmation', {'code': user.code}) }}">{{ pathab('user_register_confirmation', {'code': user.code}) }}</a>
+</p>
+
+<p>
+    Il est important de procéder à cette validation afin de pouvoir vous connecter à votre compte.
+</p>
+
+<p>
+    Nous vous remercions de l'intérêt que vous portez à ETS2Routes,<br>
+    et nous espérons vous revoir bientôt.
+</p>
+
+<p>
+    Cordialement,
+    L'administration de ets2routes.com
+</p>
