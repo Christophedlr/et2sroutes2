@@ -11,6 +11,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\Setup;
+use Kernel\TwigExtension\AppExtension;
 use Kernel\TwigExtension\AssetExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -52,6 +53,7 @@ class Controller
         /** @var Environment $twig */
         $twig = $this->container->get('twig.environment');
 
+        $twig->addExtension(new AppExtension($this->container));
         $twig->addExtension(new AssetExtension($this->container));
         $twig->addGlobal('flashBag', $this->getFlashBag());
 
