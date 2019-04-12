@@ -15,4 +15,11 @@ return [
         'class' => \Twig\Environment::class,
         'arguments' => ['@twig.loader', ['cache' => false]]
     ],
+    'session' => [
+        'class' => Session::class,
+    ],
+    'mailer' => [
+        'class' => \Kernel\Mailer::class,
+        'arguments' => ['%mailer.host%', '%mailer.user%', '%mailer.pass%', '%mailer.port%', '%mailer.encryption%']
+    ],
 ];

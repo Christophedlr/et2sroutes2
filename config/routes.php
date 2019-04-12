@@ -17,6 +17,13 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('user_register_confirmation')
+        ->setRoute('/user/register/validation/[a:code]')
+        ->setController('Bundle\\User:UserController:validationAction')
+        ->addMethod('GET')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }

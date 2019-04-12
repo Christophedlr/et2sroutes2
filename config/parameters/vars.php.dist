@@ -5,5 +5,12 @@
  */
 
 return [
-    'vars.uri' => ''
+    'vars.uri' => '',
+    'mailer.host' => '',
+    'mailer.port' => 25,
+    'mailer.user' => '',
+    'mailer.pass' => '',
+    'mailer.encryption' => null,
+    'mailer.from' => '',
+    'mailer.from.name' => 'ETS2Routes',
 ];
