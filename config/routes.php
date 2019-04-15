@@ -32,11 +32,20 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
     $routes[] = (new Route())
         ->setName('user_disconnect')
         ->setRoute('/user/disconnect')
         ->setController('Bundle\\User:UserController:disconnectAction')
         ->addMethod('GET')
+    ;
+
+    $routes[] = (new Route())
+        ->setName('user_password_lost')
+        ->setRoute('/user/lost')
+        ->setController('Bundle\\User:UserController:lostAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
     ;
 } catch (Exception $e) {
     return $e->getMessage();

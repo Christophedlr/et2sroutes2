@@ -251,6 +251,7 @@ class User
 
     /**
      * @param bool $active
+     * @return User
      */
     public function setActive(bool $active)
     {

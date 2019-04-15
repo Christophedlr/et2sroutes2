@@ -9,8 +9,10 @@ namespace Bundle\User\Controller;
 
 use Bundle\User\Entity\User;
 use Bundle\User\Validator\LoginValidator;
+use Bundle\User\Validator\LostValidator;
 use Bundle\User\Validator\RegisterValidator;
 use Kernel\Controller;
+use Kernel\Form\Validation\AbstractValidator;
 use Kernel\Mailer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -193,5 +195,95 @@ class UserController extends Controller
         );
 
         return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Exception
+     */
+    public function lostAction(Request $request)
+    {
+        $validator = new LostValidator($request);
+        $errors = [];
+
+        if ($request->request->has('form') && $validator->validate()) {
+            $form = $request->request->get('form');
+            $em = $this->getEntityManager();
+            $repos = $em->getRepository(User::class);
+            $user = $repos->findOneBy(['login' => $form['login'], 'mail' => $form['mail']]);
+
+            if (is_null($user)) {
+                $this->getFlashBag()->add(
+                    'danger',
+                    "Le login et l'adresse e-mail, ne correspondent pas à un utilisateur"
+                );
+            }
+
+            $password = $this->generatePassword();
+            $user->setPlainPassword($password);
+            $user->updatePassword();
+
+            $em = $this->getEntityManager();
+            $em->persist($user);
+            $em->flush();
+
+            /** @var Mailer $mailer */
+            $mailer = $this->container->get('mailer');
+
+            $message = $mailer->newMessage(
+                "Nouveau mot de passe",
+                $this->getTemplate()->getRenderer()->render(
+                    '@User/mail/lost.html.twig', [
+                        'user' => $user,
+                        'password' => $password
+                    ]
+                ),
+                'text/html'
+            );
+            $message
+                ->setFrom(
+                    $this->container->getParameter('mailer.from'),
+                    $this->container->getParameter('mailer.from.name')
+                )
+                ->setTo($user->getMail(), $user->getLogin());
+
+            $mailer->send($message);
+
+            $this->getFlashBag()->add('success', 'Un e-mail vous a été envoyé avec le nouveau mot de passe');
+            return $this->redirectToRoute('homepage');
+        }
+
+        return $this->getTemplate()->renderResponse('@User/lost.html.twig', [
+            'errors' => $errors,
+            'form' => $request->request->get('form', []),
+        ]);
+    }
+
+    /**
+     * Generate random secure password
+     *
+     * @return bool|string
+     */
+    private function generatePassword()
+    {
+        start:
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $result = substr(str_shuffle($chars),0,12);
+
+        if (filter_var($result, FILTER_VALIDATE_REGEXP, [
+            'options' => [
+                'regexp' => AbstractValidator::$REGEXP_PASSWORD
+                ]
+            ]) === false) {
+            goto start;
+        }
+
+        return $result;
     }
 }
