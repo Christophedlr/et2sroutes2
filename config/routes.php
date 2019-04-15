@@ -24,6 +24,20 @@ try {
         ->setController('Bundle\\User:UserController:validationAction')
         ->addMethod('GET')
     ;
+
+    $routes[] = (new Route())
+        ->setName('user_login')
+        ->setRoute('/user/login')
+        ->setController('Bundle\\User:UserController:loginAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
+    $routes[] = (new Route())
+        ->setName('user_disconnect')
+        ->setRoute('/user/disconnect')
+        ->setController('Bundle\\User:UserController:disconnectAction')
+        ->addMethod('GET')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }

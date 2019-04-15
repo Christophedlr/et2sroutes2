@@ -7,6 +7,7 @@
 namespace Kernel;
 
 
+use Bundle\User\Entity\User;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -34,6 +35,11 @@ class Controller
      */
     protected $container;
 
+    /**
+     * Controller constructor.
+     * @param ContainerBuilder $container
+     * @throws \Exception
+     */
     public function __construct(ContainerBuilder $container)
     {
         $this->container = $container;
@@ -58,7 +64,7 @@ class Controller
         $twig->addGlobal('flashBag', $this->getFlashBag());
 
         $this->getDoctrine();
-        $this->getSession()->start();
+        $this->anonymousUser();
     }
 
     /**
@@ -132,5 +138,25 @@ class Controller
     public function redirectToRoute(string $route, array $params = [])
     {
         return new RedirectResponse($this->container->get('router')->generate($route, $params));
+    }
+
+    /**
+     * Register anonymous user in session
+     * @throws \Exception
+     */
+    public function anonymousUser()
+    {
+        $user = new User();
+        $user
+            ->setLogin('anonymous')
+            ->setActive(true)
+            ->setRegisterDate(new \DateTime())
+            ->setLastConnection(new \DateTime());
+
+        if (!$this->getSession()->isStarted()) {
+            $this->getSession()->start();
+        }
+
+        $this->getSession()->set('user', $user);
     }
 }

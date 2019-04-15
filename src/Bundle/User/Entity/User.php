@@ -255,5 +255,7 @@ class User
     public function setActive(bool $active)
     {
         $this->active = $active;
+
+        return $this;
     }
 }

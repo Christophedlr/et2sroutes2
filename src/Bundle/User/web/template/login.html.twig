@@ -1,0 +1,31 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Connexion' %}
+
+{% block title %}Connexion utilisateur{% endblock %}
+
+{% block body %}
+    <form action="{{ pathab('user_login') }}" method="POST">
+        <div class="form-group">
+            <label for="login">Nom d'utilisateur :</label>
+            <input type="text" id="login" maxlength="50"
+                   name="form[login]" class="form-control {% if errors.login is defined %} is-invalid {% endif %}"
+                   value="{% if form.login is defined %}{{ form.login }}{% endif %}" required>
+            {% for login in errors.login %}
+                <div class="invalid-feedback">{{ login }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" maxlength="50"
+                   name="form[password]" class="form-control {% if errors.password is defined %} is-invalid {% endif %}"
+                   required>
+            {% for password in errors.password %}
+                <div class="invalid-feedback">{{ password }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Connexion</button>
+    </form>
+{% endblock %}

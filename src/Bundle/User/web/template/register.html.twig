@@ -5,7 +5,7 @@
 {% block title %}Inscription d'un utilisateur{% endblock %}
 
 {% block body %}
-    <form action="http://localhost:8000/user/register" method="POST">
+    <form action="{{ pathab('user_register') }}" method="POST">
         <div class="form-group">
             <label for="login">Nom d'utilisateur :</label>
             <input type="text" id="login" maxlength="50"
