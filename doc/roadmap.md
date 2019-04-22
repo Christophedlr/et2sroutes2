@@ -22,7 +22,7 @@ Que cela soit des versions temporaire (Alpha, Beta) ou les Release.
     * Slugs
     
 ## 0.2.0a (Version Alpha)
-
+1. Création d'un système d'annotations (dev)
 1. Gestion de la mise en forme des messages
     * Lecture des tags BBCode
     * Mise en forme des champs textes
@@ -33,9 +33,12 @@ Que cela soit des versions temporaire (Alpha, Beta) ou les Release.
     * Possibilité d'afficher le gravatar correspondant au nom d'utilisateur
 
 ## 0.3.0a (Version Alpha)
-1. Mise en place du système de console (dev)
-2. Ajout d'un système de gestion des utilisateurs via la console (dev)
-3. Ajout d'un forum
+1. Système de gestion des utilisateurs
+    * Ajout d'une captcha à l'inscription
+    * Ajout d'une annotation pour les autorisations d'accès
+2. Mise en place du système de console (dev)
+3. Ajout d'un système de gestion des utilisateurs via la console (dev)
+4. Ajout d'un forum
      * Créer des catégories
      * Créer des topics
      * Répondre aux topics
