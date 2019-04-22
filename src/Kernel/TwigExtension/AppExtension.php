@@ -9,9 +9,17 @@ namespace Kernel\TwigExtension;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
 
-class AppExtension extends AbstractExtension
+/**
+ * Add functions and global vars for application
+ *
+ * @package Kernel\TwigExtension
+ * @author Christophe Daloz - De Los Rios
+ * @version 0.1.0a
+ */
+class AppExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * @var ContainerBuilder
@@ -28,6 +36,17 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('path', [$this, 'path']),
             new TwigFunction('pathab', [$this, 'absolute']),
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function getGlobals()
+    {
+        return [
+            'user' => $this->getUser(),
         ];
     }
 
@@ -56,5 +75,14 @@ class AppExtension extends AbstractExtension
     {
         return $this->container->getParameter('vars.uri').
             $this->path($route, $params);
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getUser()
+    {
+        return $this->container->get('session')->get('user');
     }
 }

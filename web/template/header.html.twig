@@ -1,7 +1,7 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="container-fluid">
-            <a href="#" class="navbar-brand">
+            <a href="{{ path('homepage') }}" class="navbar-brand">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="img-md-fluid" width="20%">
             </a>
 
@@ -12,8 +12,14 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Forum</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Inscription</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Connexion</a></li>
+
+                    {% if user.id is not null %}
+                        <li class="nav-item"><a href="{{ path('user_profile') }}" class="nav-link">Profil</a></li>
+                        <li class="nav-item"><a href="{{ path('user_disconnect') }}" class="nav-link">Déconnexion</a></li>
+                    {% else %}
+                        <li class="nav-item"><a href="{{ path('user_register') }}" class="nav-link">Inscription</a></li>
+                        <li class="nav-item"><a href="{{ path('user_login') }}" class="nav-link">Connexion</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
