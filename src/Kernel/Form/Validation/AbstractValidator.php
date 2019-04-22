@@ -13,11 +13,14 @@ abstract class AbstractValidator
 {
     protected $form = [];
     protected $errors = [];
+    protected $request;
 
     public static $REGEXP_PASSWORD = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/';
 
     public function __construct(Request $request)
     {
+        $this->request = $request;
+
         if ($request->request->has('form')) {
             $this->form = $request->request->get('form', []);
         }
