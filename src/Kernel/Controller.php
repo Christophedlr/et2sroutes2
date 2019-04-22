@@ -63,6 +63,10 @@ class Controller
         $twig->addExtension(new AssetExtension($this->container));
         $twig->addGlobal('flashBag', $this->getFlashBag());
 
+        if (!$this->getSession()->isStarted()) {
+            $this->getSession()->start();
+        }
+
         $this->getDoctrine();
         $this->anonymousUser();
     }
@@ -146,17 +150,19 @@ class Controller
      */
     public function anonymousUser()
     {
-        $user = new User();
-        $user
-            ->setLogin('anonymous')
-            ->setActive(true)
-            ->setRegisterDate(new \DateTime())
-            ->setLastConnection(new \DateTime());
+        if (!$this->getSession()->has('user')) {
+            $user = new User();
+            $user
+                ->setLogin('anonymous')
+                ->setActive(true)
+                ->setRegisterDate(new \DateTime())
+                ->setLastConnection(new \DateTime());
 
-        if (!$this->getSession()->isStarted()) {
-            $this->getSession()->start();
+            if (!$this->getSession()->isStarted()) {
+                $this->getSession()->start();
+            }
+
+            $this->getSession()->set('user', $user);
         }
-
-        $this->getSession()->set('user', $user);
     }
 }
