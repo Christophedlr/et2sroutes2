@@ -47,6 +47,14 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('user_profile')
+        ->setRoute('/user/profile')
+        ->setController('Bundle\\User:UserController:profileAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }

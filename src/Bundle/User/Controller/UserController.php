@@ -10,6 +10,8 @@ namespace Bundle\User\Controller;
 use Bundle\User\Entity\User;
 use Bundle\User\Validator\LoginValidator;
 use Bundle\User\Validator\LostValidator;
+use Bundle\User\Validator\MailValidator;
+use Bundle\User\Validator\ProfilePasswordValidator;
 use Bundle\User\Validator\RegisterValidator;
 use Kernel\Controller;
 use Kernel\Form\Validation\AbstractValidator;
@@ -262,6 +264,69 @@ class UserController extends Controller
         return $this->getTemplate()->renderResponse('@User/lost.html.twig', [
             'errors' => $errors,
             'form' => $request->request->get('form', []),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Exception
+     */
+    public function profileAction(Request $request)
+    {
+        if (is_null($this->getSession()->get('user')->getId())) {
+            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $errors = [];
+        $ProfilePasswordValidator = new ProfilePasswordValidator($request);
+        $profileMailValidator = new MailValidator($request);
+
+        if ($request->request->has('form') &&
+            $request->request->get('form')['btn'] === 'password' &&
+            $ProfilePasswordValidator->validate()) {
+            $errors = $ProfilePasswordValidator->getErrors();
+            $em = $this->getEntityManager();
+
+            $user = $this->getSession()->get('user');
+            $user->setPlainPassword($request->request->has('form')['password']);
+            $user->updatePassword();
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->getFlashBag()->add(
+                'success',
+                'Changement de mot de passe réussi, par sécurité vous devez vous reconnecter'
+            );
+
+            return $this->disconnectAction();
+        } else if ($request->request->has('form') &&
+        $request->request->get('form')['btn'] === 'mail' &&
+            $profileMailValidator->validate()) {
+            $errors = $profileMailValidator->getErrors();
+            $em = $this->getEntityManager();
+
+            $user = $this->getSession()->get('user');
+            $user->setMail($request->request->has('form')['mail']);
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->getFlashBag()->add(
+                'success',
+                "Changement d'e-mail réussi, par sécurité vous devez vous reconnecter"
+            );
+
+            return $this->disconnectAction();
+        }
+
+        return $this->getTemplate()->renderResponse('@User/profile.html.twig', [
+            'errors' => $errors
         ]);
     }
 
