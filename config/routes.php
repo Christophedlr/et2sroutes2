@@ -55,6 +55,14 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('news_admin_add')
+        ->setRoute('/admin/news/add')
+        ->setController('Bundle\\News:NewsController:createAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }
