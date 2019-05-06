@@ -4,54 +4,7 @@
 
 {% block body %}
     <div class="row mt-4">
-        {{ news|raw }}
-        <!--<article class="col-md-6 col-lg-3">
-            <section class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Lorem ipsum dolor.</h2>
-                    <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. At, beatae, debitis distinctio doloribus ea earum eius error esse excepturi harum impedit in recusandae reiciendis sapiente sit velit veniam voluptas. Ipsum?
-                    </p>
-                    <a href="#" class="btn btn-primary">Lire la suite</a>
-                </div>
-            </section>
-        </article>
-
-        <article class="col-md-6 col-lg-3">
-            <section class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Lorem ipsum dolor.</h2>
-                    <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. At, beatae, debitis distinctio doloribus ea earum eius error esse excepturi harum impedit in recusandae reiciendis sapiente sit velit veniam voluptas. Ipsum?
-                    </p>
-                    <a href="#" class="btn btn-primary">Lire la suite</a>
-                </div>
-            </section>
-        </article>
-
-        <article class="col-md-6 col-lg-3">
-            <section class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Lorem ipsum dolor.</h2>
-                    <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. At, beatae, debitis distinctio doloribus ea earum eius error esse excepturi harum impedit in recusandae reiciendis sapiente sit velit veniam voluptas. Ipsum?
-                    </p>
-                    <a href="#" class="btn btn-primary">Lire la suite</a>
-                </div>
-            </section>
-        </article>
-
-        <article class="col-md-6 col-lg-3">
-            <section class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Lorem ipsum dolor.</h2>
-                    <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. At, beatae, debitis distinctio doloribus ea earum eius error esse excepturi harum impedit in recusandae reiciendis sapiente sit velit veniam voluptas. Ipsum?
-                    </p>
-                    <a href="#" class="btn btn-primary">Lire la suite</a>
-                </div>
-            </section>
-        </article>-->
+        {{ controller('Bundle\\News:NewsController:returnNewsAction') }}
     </div>
 
     <div class="row mt-4">
