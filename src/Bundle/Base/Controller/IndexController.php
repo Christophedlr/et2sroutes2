@@ -7,6 +7,10 @@
 namespace Bundle\Base\Controller;
 
 
+use Bundle\News\Controller\NewsController;
+use Bundle\News\Entity\News;
+use Bundle\News\Entity\NewsCategory;
+use Bundle\User\Entity\User;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +19,10 @@ class IndexController extends Controller
 {
     public function indexAction(Request $request)
     {
-        return $this->getTemplate()->renderResponse('@Base/index.html.twig');
+        $controller = new NewsController($this->container);
+
+        return $this->getTemplate()->renderResponse('@Base/index.html.twig', [
+            'news' => $controller->returnNewsAction(),
+        ]);
     }
 }

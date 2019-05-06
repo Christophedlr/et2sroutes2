@@ -1,0 +1,17 @@
+{% set loopNews=1 %}
+{% for new in news %}
+    <article class="col-md-6 col-lg-3 {% if loopNews>4 %}{% set loopNews=1 %}mt-4{% endif %}">
+        <section class="card">
+            <div class="card-header">
+                Par <b>{{ new.author.login }}</b>, le <b>{{ new.createdDate|date('d/m/Y H:i') }}</b>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">{{ new.name }}</h2>
+                <p class="card-text">{{ new.text }}</p>
+                <a href="#" class="btn btn-primary">Lire la suite</a>
+            </div>
+        </section>
+    </article>
+
+    {% set loopNews = loopNews+1 %}
+{% endfor %}

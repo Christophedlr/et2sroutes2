@@ -56,12 +56,7 @@ class Controller
             }
         }
 
-        /** @var Environment $twig */
-        $twig = $this->container->get('twig.environment');
-
-        $twig->addExtension(new AppExtension($this->container));
-        $twig->addExtension(new AssetExtension($this->container));
-        $twig->addGlobal('flashBag', $this->getFlashBag());
+        $this->twigExtensionsAndVars();
 
         if (!$this->getSession()->isStarted()) {
             $this->getSession()->start();
@@ -88,6 +83,7 @@ class Controller
     {
         if (!$this->container->has('doctrine')) {
             $this->container->set('doctrine', Setup::createAnnotationMetadataConfiguration(['src']));
+            $this->container->get('doctrine')->setAutoGenerateProxyClasses(true);
         }
 
         return $this->container->get('doctrine');
@@ -163,6 +159,21 @@ class Controller
             }
 
             $this->getSession()->set('user', $user);
+        }
+    }
+
+    public function twigExtensionsAndVars()
+    {
+        if (!$this->container->hasParameter('twig.extensions.load') ||
+            $this->container->getParameter('twig.extensions.load') === false) {
+            /** @var Environment $twig */
+            $twig = $this->container->get('twig.environment');
+
+            $twig->addExtension(new AppExtension($this->container));
+            $twig->addExtension(new AssetExtension($this->container));
+            $twig->addGlobal('flashBag', $this->getFlashBag());
+
+            $this->container->setParameter('twig.extensions.load', true);
         }
     }
 }
