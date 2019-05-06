@@ -63,6 +63,8 @@ class News
      */
     private $createdDate;
 
+    private $changedSlug = false;
+
     public function __construct()
     {
         $this->setCreatedDate(new \DateTime());
@@ -173,6 +175,8 @@ class News
     public function setSlug(string $slug): News
     {
         $this->slug = $slug;
+        $this->changedSlug = true;
+
         return $this;
     }
 
@@ -196,16 +200,19 @@ class News
 
     /**
      * @ORM\PrePersist
-     * @ORM\PreUpdate
      */
     public function updateSlug()
     {
-        $newTitle = preg_replace('#[^a-zA-z0-9]+#', '-', $this->getName());
+        if (!$this->changedSlug) {
+            $newTitle = preg_replace('#[^a-zA-z0-9]+#', '-', $this->getName());
 
-        if (substr($newTitle, -1) === '-') {
-            $newTitle = substr($newTitle, 0, -1);
+            if (substr($newTitle, -1) === '-') {
+                $newTitle = substr($newTitle, 0, -1);
+            }
+
+            $newTitle = strtolower($newTitle);
+
+            $this->setSlug($newTitle);
         }
-
-        $this->setSlug($newTitle);
     }
 }

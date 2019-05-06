@@ -1,0 +1,54 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Modifier une news' %}
+
+{% block title %}Modification d'une news{% endblock %}
+
+{% block body %}
+    <form action="{{ pathab('news_admin_change', {'id': id}) }}" method="POST">
+        <div class="form-group">
+            <label for="name">Nom de la news :</label>
+            <input type="text" id="login" maxlength="50"
+                   name="form[name]" class="form-control {% if errors.name is defined %} is-invalid {% endif %}"
+                   value="{% if form.name is defined %}{{ form.name }}{% endif %}" required>
+            {% for name in errors.name %}
+                <div class="invalid-feedback">{{ name }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="category">Catégorie :</label>
+            <select name="form[category]" id="category" class="form-control
+                {% if errors.category is defined %} is-invalid {% endif %}" required>
+                {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {%  if form.category is defined and form.category==category.id%}select{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% for category in errors.category %}
+                <div class="invalid-feedback">{{ category }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            <label for="text">News :</label>
+            <textarea name="form[text]" id="text" cols="30" rows="6" class="form-control">{% if form.text is defined %}{{ form.text }}{% endif %}</textarea>
+            {% for text in errors.text %}
+                <div class="invalid-feedback">{{ text }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="text">Slug :</label>
+            <input type="text" name="form[slug]" id="text" class="form-control {% if errors.slug is defined %} is-invalid {% endif %}"
+                   value="{% if form.slug is defined %}{{ form.slug }}{% endif %}" required>
+            {% for slug in errors.slug %}
+                <div class="invalid-feedback">{{ slug }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Modifier</button>
+    </form>
+{% endblock %}

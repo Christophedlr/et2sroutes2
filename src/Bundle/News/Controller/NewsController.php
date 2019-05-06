@@ -9,6 +9,7 @@ namespace Bundle\News\Controller;
 
 use Bundle\News\Entity\News;
 use Bundle\News\Entity\NewsCategory;
+use Bundle\News\Validator\ChangeValidator;
 use Bundle\News\Validator\CreateValidator;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,7 @@ class NewsController extends Controller
         $categories = $repos->findAll();
 
         $errors = [];
+        $form = [];
         $createValidator = new CreateValidator($request);
 
         if ($request->request->has('form') && $createValidator->validate()) {
@@ -73,6 +75,70 @@ class NewsController extends Controller
         return $this->getTemplate()->renderResponse('@News/create.html.twig', [
             'errors' => $errors,
             'categories' => $categories,
+            'form' => $form
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Exception
+     */
+    public function changeAction(int $id, Request $request)
+    {
+        if (is_null($this->getSession()->get('user')->getId())) {
+            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
+        $categories = $repos->findAll();
+
+        $reposNews = $this->getEntityManager()->getRepository(News::class);
+        $news = $reposNews->find($id);
+
+        $form['name'] = $news->getName();
+        $form['text'] = $news->getText();
+        $form['category'] = $news->getCategory()->getId();
+        $form['slug'] = $news->getSlug();
+
+        $errors = [];
+        $validator = new ChangeValidator($request);
+
+        if ($request->request->has('form') && $validator->validate()) {
+            $form = $request->request->get('form');
+            $category = $repos->find($form['category']);
+
+            $news
+                ->setName($form['name'])
+                ->setCategory($category)
+                ->setText($form['text'])
+                ->setSlug($form['slug']);
+
+            $em = $this->getEntityManager();
+            $em->persist($news);
+            $em->flush();
+
+            $this->getFlashBag()->add('success','La news a bien été modifiée');
+
+            return $this->redirectToRoute('homepage');
+        } else {
+            $errors = $validator->getErrors();
+        }
+
+        var_dump($errors);
+
+        return $this->getTemplate()->renderResponse('@News/change.html.twig', [
+            'errors' => $errors,
+            'categories' => $categories,
+            'form' => $form,
+            'id' => $id,
         ]);
     }
 }
