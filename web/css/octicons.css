@@ -1,0 +1,34 @@
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+  width: 16px;
+}
+
+a.octicon {
+  text-decoration: none;
+}
+
+.octicon-size-small {
+  width: 8px;
+}
+
+.octicon-size-normal {
+  width: 16px;
+}
+
+.octicon-size-meidum {
+  width: 20px;
+}
+
+.octicon-size-big {
+  width: 24px;
+}
+
+.octicon-pencil {
+  background: url("https://api.iconify.design/octicon-pencil.svg?color=%23FF4500") no-repeat center center/contain;
+}
+
+.octicon-x {
+  background: url("https://api.iconify.design/octicon-x.svg?color=%23FF0000") no-repeat center center/contain;
+}
