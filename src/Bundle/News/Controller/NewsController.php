@@ -11,6 +11,8 @@ use Bundle\News\Entity\News;
 use Bundle\News\Entity\NewsCategory;
 use Bundle\News\Validator\ChangeValidator;
 use Bundle\News\Validator\CreateValidator;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -140,5 +142,35 @@ class NewsController extends Controller
             'form' => $form,
             'id' => $id,
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws ORMException
+     * @throws \Exception
+     */
+    public function deleteAction(int $id)
+    {
+        if (is_null($this->getSession()->get('user')->getId())) {
+            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $reposNews = $this->getEntityManager()->getRepository(News::class);
+        $news = $reposNews->find($id);
+
+        $em = $this->getEntityManager();
+        $em->remove($news);
+        try {
+            $em->flush();
+        } catch (OptimisticLockException $e) {
+        } catch (ORMException $e) {
+            $this->getFlashBag()->add('danger', 'Impossible de supprimer la news');
+        }
+
+        $this->getFlashBag()->add('success', 'La news a bien été supprimée');
+
+        return $this->redirectToRoute('homepage');
     }
 }

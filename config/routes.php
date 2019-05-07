@@ -71,6 +71,13 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+    $routes[] = (new Route())
+        ->setName('news_admin_delete')
+        ->setRoute('/admin/news/delete/[i:id]')
+        ->setController('Bundle\\News:NewsController:deleteAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }
