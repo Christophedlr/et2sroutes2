@@ -1,0 +1,32 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Liste des catégories' %}
+
+{% block title %}Liste catégories{% endblock %}
+
+{% block body %}
+    <a href="{{ pathab('news_cat_admin_add') }}" class="btn btn-primary mb-4">Ajouter</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td class="text-center">{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>
+                    <a href="{{ pathab('news_cat_admin_change', {'id': category.id}) }}" class="octicon octicon-pencil">&nbsp;</a>
+                    <a href="{{ pathab('news_cat_admin_delete', {'id': category.id}) }}" class="octicon octicon-x">&nbsp;</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

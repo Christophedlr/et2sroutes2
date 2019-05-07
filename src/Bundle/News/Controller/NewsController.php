@@ -171,4 +171,26 @@ class NewsController extends Controller
 
         return $this->redirectToRoute('homepage');
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws ORMException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Exception
+     */
+    public function listingAction()
+    {
+        if (is_null($this->getSession()->get('user')->getId())) {
+            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $repos = $this->getEntityManager()->getRepository(News::class);
+
+        return $this->getTemplate()->renderResponse('@News/listing.html.twig', [
+            'news' => $repos->findBy([], ['id' => 'ASC']),
+        ]);
+    }
 }

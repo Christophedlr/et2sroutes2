@@ -1,0 +1,34 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Liste des news' %}
+
+{% block title %}Liste news{% endblock %}
+
+{% block body %}
+    <a href="{{ pathab('news_admin_add') }}" class="btn btn-primary mb-4">Ajouter</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Catégorie</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for news in news %}
+            <tr>
+                <td class="text-center">{{ news.id }}</td>
+                <td>{{ news.name }}</td>
+                <td>{{ news.category.name }}</td>
+                <td>
+                    <a href="{{ pathab('news_admin_change', {'id': news.id}) }}" class="octicon octicon-pencil">&nbsp;</a>
+                    <a href="{{ pathab('news_admin_delete', {'id': news.id}) }}" class="octicon octicon-x">&nbsp;</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -94,10 +94,27 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
     $routes[] = (new Route())
         ->setName('news_cat_admin_delete')
         ->setRoute('/admin/news/category/delete/[i:id]')
         ->setController('Bundle\\News:CategoryController:deleteAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
+
+    $routes[] = (new Route())
+        ->setName('news_admin_list')
+        ->setRoute('/admin/news')
+        ->setController('Bundle\\News:NewsController:listingAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
+
+    $routes[] = (new Route())
+        ->setName('news_cat_admin_list')
+        ->setRoute('/admin/news/category')
+        ->setController('Bundle\\News:CategoryController:listingAction')
         ->addMethod('GET')
         ->addMethod('POST')
     ;
