@@ -22,12 +22,14 @@ Que cela soit des versions temporaire (Alpha, Beta) ou les Release.
     * Slugs
     
 ## 0.2.0a (Version Alpha)
-1. Création d'un système d'annotations (dev)
-1. Gestion de la mise en forme des messages
-    * Lecture des tags BBCode
-    * Mise en forme des champs textes
-2. Système de contact
-3. Ajout de l'avatar au compte utilisateur
+1. Mise en place d'une interface d'administration
+    * Entité pour lister les bundle installés
+2. Correction du bug sur le breadcrum
+3. Création d'un système d'annotations (dev)
+    * Sécurisation d'accès
+    * Vérification de formulaire dans l'entité
+4. Système de contact
+5. Ajout de l'avatar au compte utilisateur
     * Possibilité d'ajouter un avatar depuis un lien
     * Possibilité d'ajouter un avatar depuis l'ordinateur
     * Possibilité d'afficher le gravatar correspondant au nom d'utilisateur
@@ -36,9 +38,10 @@ Que cela soit des versions temporaire (Alpha, Beta) ou les Release.
 1. Système de gestion des utilisateurs
     * Ajout d'une captcha à l'inscription
     * Ajout d'une annotation pour les autorisations d'accès
-2. Mise en place du système de console (dev)
-3. Ajout d'un système de gestion des utilisateurs via la console (dev)
-4. Ajout d'un forum
+3. Gestion de la mise en forme des messages
+     * Lecture des tags BBCode
+     * Mise en forme des champs textes
+5. Ajout d'un forum
      * Créer des catégories
      * Créer des topics
      * Répondre aux topics
@@ -49,6 +52,8 @@ Que cela soit des versions temporaire (Alpha, Beta) ou les Release.
 3. Système de commentaire sur les news
 4. Pagination sur les news
 5. Pagination sur les commentaires
+6. Ajout d'un système de gestion des utilisateurs via la console (dev)
+7. Mise en place du système de console (dev)
 
 Les tags servent à réaliser un filtre afin de trouver
 les news et topics du forum assez facilement.
