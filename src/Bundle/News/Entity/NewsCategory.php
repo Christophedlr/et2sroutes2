@@ -39,6 +39,8 @@ class NewsCategory
      */
     private $slug;
 
+    private $changedSlug = false;
+
     /**
      * @return int
      */
@@ -67,10 +69,12 @@ class NewsCategory
 
     /**
      * @param string $name
+     * @return NewsCategory
      */
     public function setName(string $name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -83,10 +87,14 @@ class NewsCategory
 
     /**
      * @param string $slug
+     * @return NewsCategory
      */
     public function setSlug(string $slug)
     {
         $this->slug = $slug;
+        $this->changedSlug = true;
+
+        return $this;
     }
 
     /**
@@ -95,12 +103,16 @@ class NewsCategory
      */
     public function updateSlug()
     {
-        $newTitle = preg_replace('#[^a-zA-z0-9]+#', '-', $this->getName());
+        if (!$this->changedSlug) {
+            $newTitle = preg_replace('#[^a-zA-z0-9]+#', '-', $this->getName());
 
-        if (substr($newTitle, -1) === '-') {
-            $newTitle = substr($newTitle, 0, -1);
+            if (substr($newTitle, -1) === '-') {
+                $newTitle = substr($newTitle, 0, -1);
+            }
+
+            $newTitle = strtolower($newTitle);
+
+            $this->setSlug($newTitle);
         }
-
-        $this->setSlug($newTitle);
     }
 }

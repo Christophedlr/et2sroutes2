@@ -78,6 +78,29 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('news_cat_admin_add')
+        ->setRoute('/admin/news/category/add')
+        ->setController('Bundle\\News:CategoryController:createAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
+
+    $routes[] = (new Route())
+        ->setName('news_cat_admin_change')
+        ->setRoute('/admin/news/category/change/[i:id]')
+        ->setController('Bundle\\News:CategoryController:changeAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
+    $routes[] = (new Route())
+        ->setName('news_cat_admin_delete')
+        ->setRoute('/admin/news/category/delete/[i:id]')
+        ->setController('Bundle\\News:CategoryController:deleteAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }

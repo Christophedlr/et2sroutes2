@@ -1,0 +1,21 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Ajouter une catégorie de news' %}
+
+{% block title %}Création news catégorie{% endblock %}
+
+{% block body %}
+    <form action="{{ pathab('news_cat_admin_add') }}" method="POST">
+        <div class="form-group">
+            <label for="name">Nom de la catégorie :</label>
+            <input type="text" id="name" maxlength="50"
+                   name="form[name]" class="form-control {% if errors.name is defined %} is-invalid {% endif %}"
+                   value="{% if form.name is defined %}{{ form.name }}{% endif %}" required>
+            {% for name in errors.name %}
+                <div class="invalid-feedback">{{ name }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'layout.html.twig' %}
+
+{% set title = 'Modifier une news' %}
+
+{% block title %}Modification d'une news{% endblock %}
+
+{% block body %}
+    <form action="{{ pathab('news_cat_admin_change', {'id': id}) }}" method="POST">
+        <div class="form-group">
+            <label for="name">Nom de la news :</label>
+            <input type="text" id="name" maxlength="50"
+                   name="form[name]" class="form-control {% if errors.name is defined %} is-invalid {% endif %}"
+                   value="{% if form.name is defined %}{{ form.name }}{% endif %}" required>
+            {% for name in errors.name %}
+                <div class="invalid-feedback">{{ name }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="slug">Slug :</label>
+            <input type="text" name="form[slug]" id="slug" class="form-control {% if errors.slug is defined %} is-invalid {% endif %}"
+                   value="{% if form.slug is defined %}{{ form.slug }}{% endif %}" required>
+            {% for slug in errors.slug %}
+                <div class="invalid-feedback">{{ slug }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Modifier</button>
+    </form>
+{% endblock %}
