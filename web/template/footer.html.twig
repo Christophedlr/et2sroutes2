@@ -1,4 +1,9 @@
 <footer class="mt-4">
+    {% if user.id is not null and user.admin == true %}
+        <div class="row">
+            <a href="{{ pathab('dashboard_admin') }}" class="ml-auto mr-auto">Panneau d'administration</a>
+        </div>
+    {% endif %}
     <div class="row">
         <span class="ml-auto mr-auto">
             Copyright &copy; Christophe Daloz - De Los Rios, 2019

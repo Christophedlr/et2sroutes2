@@ -57,6 +57,11 @@ class User
     private $active;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $admin;
+
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $registerDate;
@@ -73,6 +78,7 @@ class User
             ->setPassword('')
             ->setMail('')
             ->setPlainPassword('')
+            ->setAdmin(false)
             ->setRegisterDate(new \DateTime())
             ->setLastConnection(new \DateTime())
             ->setActive(false);
@@ -257,6 +263,24 @@ class User
     {
         $this->active = $active;
 
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param bool $admin
+     * @return User
+     */
+    public function setAdmin(bool $admin)
+    {
+        $this->admin = $admin;
         return $this;
     }
 }

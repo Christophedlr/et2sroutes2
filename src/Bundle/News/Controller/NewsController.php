@@ -39,8 +39,10 @@ class NewsController extends Controller
      */
     public function createAction(Request $request)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+        $user = $this->getSession()->get('user');
+
+        if (!$user->getAdmin()) {
+            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
             return $this->redirectToRoute('homepage');
         }
 
@@ -94,8 +96,10 @@ class NewsController extends Controller
      */
     public function changeAction(int $id, Request $request)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+        $user = $this->getSession()->get('user');
+
+        if (!$user->getAdmin()) {
+            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
             return $this->redirectToRoute('homepage');
         }
 
@@ -150,8 +154,10 @@ class NewsController extends Controller
      */
     public function deleteAction(int $id)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+        $user = $this->getSession()->get('user');
+
+        if (!$user->getAdmin()) {
+            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
             return $this->redirectToRoute('homepage');
         }
 
@@ -182,8 +188,10 @@ class NewsController extends Controller
      */
     public function listingAction()
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
+        $user = $this->getSession()->get('user');
+
+        if (!$user->getAdmin()) {
+            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
             return $this->redirectToRoute('homepage');
         }
 
