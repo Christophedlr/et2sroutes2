@@ -3,6 +3,7 @@
   vertical-align: text-top;
   fill: currentColor;
   width: 16px;
+  height: 16px;
 }
 
 a.octicon {
@@ -11,18 +12,22 @@ a.octicon {
 
 .octicon-size-small {
   width: 8px;
+  height: 8px;
 }
 
 .octicon-size-normal {
   width: 16px;
+  height: 16px;
 }
 
-.octicon-size-meidum {
-  width: 20px;
+.octicon-size-medium {
+  width: 32px;
+  height: 32px;
 }
 
 .octicon-size-big {
-  width: 24px;
+  width: 48px;
+  height: 48px;
 }
 
 .octicon-pencil {
@@ -31,4 +36,8 @@ a.octicon {
 
 .octicon-x {
   background: url("https://api.iconify.design/octicon-x.svg?color=%23FF0000") no-repeat center center/contain;
+}
+
+.octicon-mail {
+  background: url("https://api.iconify.design/octicon-mail.svg") no-repeat center center/contain;
 }
