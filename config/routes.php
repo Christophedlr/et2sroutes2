@@ -118,6 +118,14 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('dashboard_admin')
+        ->setRoute('/admin')
+        ->setController('Bundle\\Admin:IndexController:indexAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }
