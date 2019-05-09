@@ -2,6 +2,11 @@
 
 {% set title = 'Liste des news' %}
 
+{% set breadcrumb = [
+    {"name": 'Administration', 'link': pathab('dashboard_admin') },
+    {'name': 'News'}
+] %}
+
 {% block title %}Liste news{% endblock %}
 
 {% block body %}
