@@ -38,3 +38,10 @@ En effet, chaque élément du breadcrumb est représenté par deux éléments :
 Le fait que la première dimension est numérotée,
 permet simplement de faire une boucle dessus afin de pouvoir
 afficher donc chacun des éléments.
+
+## User
+La variable **user** sert à récupérer l'utilisateur courant.
+Elle contient donc une entité **User**.
+De base l'utilisateur est anonyme, mais c'est toujours une
+entité **User**, mais ne contenant pas de mots de passe, pas d'identifiant
+ni autres informations correspondant à un utilisateur en particulier.

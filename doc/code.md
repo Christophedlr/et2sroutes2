@@ -9,4 +9,6 @@ Ce document a un usage interne en priorité, mais peut être réutilisé par n'i
 qui, qui souhaite apporter des améliorations ou mieux comprendre la façon dont c'est coder.
 
 ## Liens
-[Variables globales (templates)](coding/vars.md)
+* [Variables globales (templates)](coding/vars.md)
+* [Fonctions globales (templates)](coding/functions.md)
+* [Les routes](coding/routes.md)
