@@ -12,6 +12,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\Setup;
+use Kernel\Annotations\Annotations;
 use Kernel\TwigExtension\AppExtension;
 use Kernel\TwigExtension\AssetExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -175,5 +176,17 @@ class Controller
 
             $this->container->setParameter('twig.extensions.load', true);
         }
+    }
+
+    /**
+     * @param string $class
+     * @param string $method
+     * @return bool|RedirectResponse
+     */
+    public function getAnnotations(string $class, string $method)
+    {
+        $annotations = new Annotations($this->container);
+
+        return $annotations->execute($class, $method);
     }
 }

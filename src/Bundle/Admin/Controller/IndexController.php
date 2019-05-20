@@ -8,6 +8,7 @@ namespace Bundle\Admin\Controller;
 
 
 use Bundle\Admin\Entity\Bundle;
+use Kernel\Annotations\Reflections\Security;
 use Kernel\Controller;
 
 /**
@@ -19,16 +20,10 @@ class IndexController extends Controller
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function indexAction()
     {
-        $user = $this->getSession()->get('user');
-
-        if (!$user->getAdmin()) {
-            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(Bundle::class);
 
         return $this->getTemplate()->renderResponse('@Admin/index.html.twig', [

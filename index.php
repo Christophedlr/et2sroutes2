@@ -22,11 +22,14 @@ $class = $explode[0].'\\Controller\\'.$explode[1];
 
 if (class_exists($class)) {
     $instance = new $class($container);
+    $response = $instance->getAnnotations($class, $explode[2]);
 
-    if (is_callable([$instance, $explode[2]])) {
-        $match['params'][Request::class] = $request;
-        /** @var Response $response */
-        $response = call_user_func_array([$instance, $explode[2]], $match['params']);
+    if ($response === true) {
+        if (is_callable([$instance, $explode[2]])) {
+            $match['params'][Request::class] = $request;
+            /** @var Response $response */
+            $response = call_user_func_array([$instance, $explode[2]], $match['params']);
+        }
     }
 } else {
     $response = new Response('Error 404', 404);
