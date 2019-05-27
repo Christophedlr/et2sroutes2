@@ -13,6 +13,7 @@ use Bundle\User\Validator\LostValidator;
 use Bundle\User\Validator\MailValidator;
 use Bundle\User\Validator\ProfilePasswordValidator;
 use Bundle\User\Validator\RegisterValidator;
+use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Kernel\Form\Validation\AbstractValidator;
 use Kernel\Mailer;
@@ -175,18 +176,10 @@ class UserController extends Controller
      * Disconnect user
      *
      * @throws \Exception
+     * @Security(type="IS_USER", message="Vous devez être identifier pour accéder à cette page", route="homepage")
      */
     public function disconnectAction()
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add(
-                'warning',
-                "Vous n'êtes pas connecté à un compte, vous ne pouvez donc pas vous déconnecter"
-            );
-
-            return $this->redirectToRoute('homepage');
-        }
-
         $this->getSession()->remove('user');
         $this->getSession()->invalidate(0);
         $this->anonymousUser();
@@ -274,14 +267,11 @@ class UserController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_USER", message="Vous devez être identifier pour accéder à cette page", route="homepage")
      */
     public function profileAction(Request $request)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $errors = [];
         $ProfilePasswordValidator = new ProfilePasswordValidator($request);
         $profileMailValidator = new MailValidator($request);

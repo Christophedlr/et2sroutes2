@@ -7,6 +7,7 @@
 namespace Kernel\Annotations\Reflections;
 
 
+use Bundle\User\Entity\User;
 use Kernel\Annotations\Annotations\Security as SecurityAnnotation;
 use Kernel\Annotations\Reflections;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +31,7 @@ class Security extends Reflections
     {
         $this->container = $container;
 
-        $this->defaultMessage = 'Unauthorized access, you are not admin';
+        $this->defaultMessage = 'Unauthorized access';
     }
 
     /**
@@ -56,10 +57,36 @@ class Security extends Reflections
                     return $this->messageAndRedirect($security->message, $security->route);
                 }
                 break;
+
+            case 'IS_NOT_ADMIN':
+                if ($this->container->get('session')->get('user')->getAdmin()) {
+                    return $this->messageAndRedirect($security->message, $security->route);
+                }
+                break;
+
+            case 'IS_ANONYMOUS':
+                /**
+                 * @var User $user
+                 */
+                $user = $this->container->get('session')->get('user');
+
+                if (!is_null($user->getId()) ) {
+                    return $this->messageAndRedirect($security->message, $security->route);
+                }
+                break;
+
+            case 'IS_USER':
+                /**
+                 * @var User $user
+                 */
+                $user = $this->container->get('session')->get('user');
+
+                if (is_null($user->getId()) || !$user->getActive() ) {
+                    return $this->messageAndRedirect($security->message, $security->route);
+                }
+                break;
         }
 
         return true;
     }
-
-
 }

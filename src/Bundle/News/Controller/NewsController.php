@@ -13,6 +13,7 @@ use Bundle\News\Validator\ChangeValidator;
 use Bundle\News\Validator\CreateValidator;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -36,16 +37,11 @@ class NewsController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function createAction(Request $request)
     {
-        $user = $this->getSession()->get('user');
-
-        if (!$user->getAdmin()) {
-            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
         $categories = $repos->findAll();
 
@@ -93,16 +89,11 @@ class NewsController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function changeAction(int $id, Request $request)
     {
-        $user = $this->getSession()->get('user');
-
-        if (!$user->getAdmin()) {
-            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
         $categories = $repos->findAll();
 
@@ -151,16 +142,11 @@ class NewsController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ORMException
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function deleteAction(int $id)
     {
-        $user = $this->getSession()->get('user');
-
-        if (!$user->getAdmin()) {
-            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $reposNews = $this->getEntityManager()->getRepository(News::class);
         $news = $reposNews->find($id);
 
@@ -185,16 +171,11 @@ class NewsController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function listingAction()
     {
-        $user = $this->getSession()->get('user');
-
-        if (!$user->getAdmin()) {
-            $this->getFlashBag()->add('danger', 'Vous devez être admin pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(News::class);
 
         return $this->getTemplate()->renderResponse('@News/listing.html.twig', [

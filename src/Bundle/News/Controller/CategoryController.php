@@ -26,14 +26,11 @@ class CategoryController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function createAction(Request $request)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $errors = [];
         $form = [];
         $createValidator = new CreateValidator($request);
@@ -71,14 +68,11 @@ class CategoryController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function changeAction(int $id, Request $request)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
         $category = $repos->find($id);
 
@@ -118,14 +112,11 @@ class CategoryController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ORMException
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function deleteAction(int $id)
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
         $category = $repos->find($id);
 
@@ -150,14 +141,11 @@ class CategoryController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws \Exception
+     *
+     * @Security(type="IS_ADMIN", message="Vous devez être admin pour accéder à cette page", route="homepage")
      */
     public function listingAction()
     {
-        if (is_null($this->getSession()->get('user')->getId())) {
-            $this->getFlashBag()->add('danger', 'Vous devez être identifié pour accéder à cette page');
-            return $this->redirectToRoute('homepage');
-        }
-
         $repos = $this->getEntityManager()->getRepository(NewsCategory::class);
 
         return $this->getTemplate()->renderResponse('@News/category/listing.html.twig', [
