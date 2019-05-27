@@ -6,31 +6,60 @@
 
 namespace Kernel\Annotations\Reflections;
 
-use Doctrine\Common\Annotations\Annotation;
 
+use Kernel\Annotations\Annotations\Security as SecurityAnnotation;
+use Kernel\Annotations\Reflections;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * @Annotation
- * @Annotation\Target("METHOD")
+ * Class Security
+ * @package Kernel\Annotations\Reflections
  *
+ * @author Christophe Daloz - De Los Rios
+ * @version 0.2.0-Alpha
  */
-final class Security
+class Security extends Reflections
 {
     /**
-     * @var string
-     * @Annotation\Enum({"IS_ADMIN", "IS_NOT_ADMIN", "IS_ANONYMOUS", "IS_USER"})
-     * @Annotation\Required
+     * Reflections constructor.
+     *
+     * @param object $object
+     * @param ContainerBuilder $container
      */
-    public $type;
+    public function __construct(ContainerBuilder $container)
+    {
+        $this->container = $container;
+
+        $this->defaultMessage = 'Unauthorized access, you are not admin';
+    }
 
     /**
-     * @var string
+     * Execute annotation orders
+     *
+     * @param SecurityAnnotation $security
+     * @return mixed
+     * @throws \Exception
      */
-    public $message;
+    public function execute(SecurityAnnotation $security)
+    {
+        if (is_null($security->route)) {
+            throw new \Exception('Security Annotation: route is required');
+        }
 
-    /**
-     * @var  string
-     * @Annotation\Required
-     */
-    public $route;
+        if (is_null($security->type)) {
+            throw new \Exception('Security Annotation: type is required');
+        }
+
+        switch ($security->type) {
+            case 'IS_ADMIN':
+                if (!$this->container->get('session')->get('user')->getAdmin()) {
+                    return $this->messageAndRedirect($security->message, $security->route);
+                }
+                break;
+        }
+
+        return true;
+    }
+
+
 }

@@ -8,7 +8,7 @@ namespace Bundle\Admin\Controller;
 
 
 use Bundle\Admin\Entity\Bundle;
-use Kernel\Annotations\Reflections\Security;
+use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 
 /**

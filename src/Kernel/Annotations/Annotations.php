@@ -10,12 +10,8 @@ namespace Kernel\Annotations;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\DocParser;
-use Kernel\Annotations\Reflections\Security;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-
-require_once 'Reflections/Security.php';
 
 /**
  * Class Annotations
@@ -36,14 +32,40 @@ class Annotations
      */
     private $defaultMessage;
 
+    private $listAnnotations;
+
     /**
      * Annotations constructor.
      * @param ContainerBuilder $container
      */
     public function __construct(ContainerBuilder $container)
     {
+        $scan = scandir(
+            __DIR__.'/../../../vendor/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation'
+        );
+
+        foreach ($scan as $index => $value) {
+            if (substr($value, strrpos($value, '.')) === '.php') {
+                require_once __DIR__.
+                    "/../../../vendor/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation/$value";
+            }
+        }
+
         $this->container = $container;
         $this->defaultMessage = 'Unauthorized access, you are not admin';
+
+        $listAnnotations = $this->container->getParameter('annotations.load');
+        $this->listAnnotations = $listAnnotations;
+
+        foreach ($listAnnotations as $annotation => $reflection) {
+            $dir = __DIR__.'/../..';
+            $dir .= '/'.str_replace('\\', '/', $annotation);
+
+            require_once "$dir.php";
+
+            AnnotationRegistry::loadAnnotationClass($annotation);
+            $docParser = new DocParser();
+        }
     }
 
     /**
@@ -58,71 +80,22 @@ class Annotations
      */
     public function execute(string $class, string $method)
     {
-        AnnotationRegistry::loadAnnotationClass(Security::class);
-        $docParser = new DocParser();
-
         $reader = new AnnotationReader();
         $methodReflection = new \ReflectionMethod($class, $method);
         $arrayObjects = $reader->getMethodAnnotations($methodReflection);
 
         foreach ($arrayObjects as $object) {
-            if ($object instanceof Security) {
-                $result = $this->securityAnnotation($object);
-            }
-
-            if ($result instanceof Response) {
-                return $result;
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Orders of Security annotation
-     *
-     * @param Security $security
-     * @return bool|RedirectResponse
-     * @throws \Exception
-     */
-    private function securityAnnotation(Security $security)
-    {
-        if (is_null($security->type)) {
-            throw new \Exception('Security Annotation: type is required');
-        }
-        if (is_null($security->route)) {
-            throw new \Exception('Security Annotation: route is required');
-        }
-
-        switch ($security->type) {
-            case 'IS_ADMIN':
-                if (!$this->container->get('session')->get('user')->getAdmin()) {
-                    return $this->messageAndRedirect($security->message, $security->route);
+            foreach ($this->listAnnotations as $annotation => $reflection) {
+                if ($object instanceof $annotation) {
+                    /**
+                     * @var Reflections $instance
+                     */
+                    $instance = new $reflection($this->container);
+                    return $instance->execute($object);
                 }
-                break;
+            }
         }
 
         return true;
-    }
-
-    /**
-     * Add flashbag and redirect to selected route
-     *
-     * @param string|null $message
-     * @param string $route
-     * @return RedirectResponse
-     * @throws \Exception
-     */
-    private function messageAndRedirect($message, string $route)
-    {
-        $msg = $this->defaultMessage;
-
-        if (!empty($message)) {
-            $msg = $message;
-        }
-
-        $this->container->get('session')->getFlashBag()->add('danger', $msg);
-        return new RedirectResponse($this->container->get('router')->generate($route, []));
     }
 }
