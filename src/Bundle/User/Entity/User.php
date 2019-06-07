@@ -8,6 +8,7 @@ namespace Bundle\User\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class User
@@ -28,6 +29,12 @@ class User
 
     /**
      * @ORM\Column(type="string", length=100, nullable=false, unique=true)
+     * @Assert\Length(
+     *     min=6,
+     *     max=50,
+     *     minMessage="Le login doit faire 6 caractères minimum",
+     *     maxMessage="Le login ne doit pas faire plus de 50 caractères au maximum"
+     )
      */
     private $login;
 
@@ -38,11 +45,17 @@ class User
 
     /**
      * @var string
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/",
+     *     message="Le mot de passe doit faire 8 caractères minimum,
+      composés de letttres (majuscules et minuscules) et des chiffres"
+     * )
      */
     private $plainPassword;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     * @Assert\Email(message="L'adresse e-mail n'est pas valide")
      */
     private $mail;
 
@@ -144,7 +157,7 @@ class User
     /**
      * @return string
      */
-    public function getPlainPassword(): string
+    public function getPlainPassword()
     {
         return $this->plainPassword;
     }
@@ -153,7 +166,7 @@ class User
      * @param string $plainPassword
      * @return User
      */
-    public function setPlainPassword(string $plainPassword)
+    public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
 
@@ -163,7 +176,7 @@ class User
     /**
      * @return string
      */
-    public function getMail(): string
+    public function getMail()
     {
         return $this->mail;
     }
@@ -172,7 +185,7 @@ class User
      * @param string $mail
      * @return User
      */
-    public function setMail(string $mail)
+    public function setMail($mail)
     {
         $this->mail = $mail;
 
@@ -182,7 +195,7 @@ class User
     /**
      * @return \DateTime
      */
-    public function getRegisterDate(): \DateTime
+    public function getRegisterDate()
     {
         return $this->registerDate;
     }
@@ -191,7 +204,7 @@ class User
      * @param \DateTime $registerDate
      * @return User
      */
-    public function setRegisterDate(\DateTime $registerDate)
+    public function setRegisterDate($registerDate)
     {
         $this->registerDate = $registerDate;
 
@@ -201,7 +214,7 @@ class User
     /**
      * @return \DateTime
      */
-    public function getLastConnection(): \DateTime
+    public function getLastConnection()
     {
         return $this->lastConnection;
     }
@@ -210,7 +223,7 @@ class User
      * @param \DateTime $lastConnection
      * @return User
      */
-    public function setLastConnection(\DateTime $lastConnection)
+    public function setLastConnection($lastConnection)
     {
         $this->lastConnection = $lastConnection;
 
@@ -231,7 +244,7 @@ class User
     /**
      * @return string
      */
-    public function getCode(): string
+    public function getCode()
     {
         return $this->code;
     }
@@ -240,7 +253,7 @@ class User
      * @param string $code
      * @return User
      */
-    public function setCode(string $code)
+    public function setCode($code)
     {
         $this->code = $code;
 
@@ -250,7 +263,7 @@ class User
     /**
      * @return bool
      */
-    public function getActive(): bool
+    public function getActive()
     {
         return $this->active;
     }
@@ -259,7 +272,7 @@ class User
      * @param bool $active
      * @return User
      */
-    public function setActive(bool $active)
+    public function setActive($active)
     {
         $this->active = $active;
 
@@ -278,7 +291,7 @@ class User
      * @param bool $admin
      * @return User
      */
-    public function setAdmin(bool $admin)
+    public function setAdmin($admin)
     {
         $this->admin = $admin;
         return $this;

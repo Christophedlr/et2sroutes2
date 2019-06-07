@@ -51,6 +51,10 @@ class Annotations
             }
         }
 
+        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Length.php";
+        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Regex.php";
+        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Email.php";
+
         $this->container = $container;
         $this->defaultMessage = 'Unauthorized access, you are not admin';
 
