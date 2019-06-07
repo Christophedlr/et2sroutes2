@@ -12,12 +12,14 @@ use Bundle\User\Validator\LoginValidator;
 use Bundle\User\Validator\LostValidator;
 use Bundle\User\Validator\MailValidator;
 use Bundle\User\Validator\ProfilePasswordValidator;
-use Bundle\User\Validator\RegisterValidator;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Kernel\Form\Validation\AbstractValidator;
 use Kernel\Mailer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validation;
 
 class UserController extends Controller
 {
@@ -33,47 +35,61 @@ class UserController extends Controller
      */
     public function registerAction(Request $request)
     {
-        $validator = new RegisterValidator($request);
-        if ($request->request->has('form') && $validator->validate()) {
+        $errors = [];
+
+        if ($request->request->has('form')) {
             $form = $request->request->get('form');
-            $user = new User();
-            $user
-                ->setLogin($form['login'])
-                ->setMail($form['mail'])
-                ->setCode(uniqid());
-            $user->setPlainPassword($form['password']);
+            if ($form['password'] === $form['passwordConfirm']) {
+                $validator = Validation::createValidatorBuilder()
+                    ->enableAnnotationMapping()
+                    ->getValidator();
 
-            $em = $this->getEntityManager();
-            $em->persist($user);
-            $em->flush();
+                $user = new User();
+                $user
+                    ->setLogin($form['login'])
+                    ->setMail($form['mail'])
+                    ->setCode(uniqid());
+                $user->setPlainPassword($form['password']);
 
-            /** @var Mailer $mailer */
-            $mailer = $this->container->get('mailer');
+                $errors = $validator->validate($user);
 
-            $message = $mailer->newMessage(
-                "Confirmation d'inscription",
-                $this->getTemplate()->getRenderer()->render(
-                    '@User/validation/register.html.twig', [
-                        'user' => $user,
-                    ]
-                ),
-                'text/html'
-            );
-            $message
-                ->setFrom(
-                    $this->container->getParameter('mailer.from'),
-                    $this->container->getParameter('mailer.from.name')
-                )
-                ->setTo($user->getMail(), $user->getLogin());
+                if (count($errors) === 0) {
+                    $em = $this->getEntityManager();
+                    $em->persist($user);
+                    $em->flush();
 
-            $mailer->send($message);
+                    /** @var Mailer $mailer */
+                    $mailer = $this->container->get('mailer');
 
-            $this->getFlashBag()->add('success', 'Un e-mail vous a été envoyé avec un lien de confirmation');
-            return $this->redirectToRoute('homepage');
+                    $message = $mailer->newMessage(
+                        "Confirmation d'inscription",
+                        $this->getTemplate()->getRenderer()->render(
+                            '@User/validation/register.html.twig', [
+                                'user' => $user,
+                            ]
+                        ),
+                        'text/html'
+                    );
+                    $message
+                        ->setFrom(
+                            $this->container->getParameter('mailer.from'),
+                            $this->container->getParameter('mailer.from.name')
+                        )
+                        ->setTo($user->getMail(), $user->getLogin());
+
+                    $mailer->send($message);
+
+                    $this->getFlashBag()->add('success',
+                        'Un e-mail vous a été envoyé avec un lien de confirmation');
+                    return $this->redirectToRoute('homepage');
+                }
+            } else {
+                $this->getFlashBag()->add('danger', 'Les deux mots de passe doivent être identiques');
+            }
         }
 
         return $this->getTemplate()->renderResponse('@User/register.html.twig', [
-            'errors' => $validator->getErrors(),
+            'form_errors' => $errors,
             'form' => $request->request->get('form', []),
         ]);
     }
