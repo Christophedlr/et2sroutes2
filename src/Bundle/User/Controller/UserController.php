@@ -8,18 +8,12 @@ namespace Bundle\User\Controller;
 
 
 use Bundle\User\Entity\User;
-use Bundle\User\Validator\LoginValidator;
-use Bundle\User\Validator\LostValidator;
-use Bundle\User\Validator\MailValidator;
-use Bundle\User\Validator\ProfilePasswordValidator;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Kernel\Form\Validation\AbstractValidator;
 use Kernel\Mailer;
+use Kernel\Validation;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validation;
 
 class UserController extends Controller
 {
@@ -40,9 +34,7 @@ class UserController extends Controller
         if ($request->request->has('form')) {
             $form = $request->request->get('form');
             if ($form['password'] === $form['passwordConfirm']) {
-                $validator = Validation::createValidatorBuilder()
-                    ->enableAnnotationMapping()
-                    ->getValidator();
+                $validator = new Validation();
 
                 $user = new User();
                 $user
@@ -89,7 +81,7 @@ class UserController extends Controller
         }
 
         return $this->getTemplate()->renderResponse('@User/register.html.twig', [
-            'form_errors' => $errors,
+            'errors' => $errors,
             'form' => $request->request->get('form', []),
         ]);
     }
@@ -145,10 +137,9 @@ class UserController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $validator = new LoginValidator($request);
         $errors = [];
 
-        if ($request->request->has('form') && $validator->validate()) {
+        if ($request->request->has('form')) {
             $form = $request->request->get('form');
             $em = $this->getEntityManager();
             $repos = $em->getRepository(User::class);
@@ -177,8 +168,6 @@ class UserController extends Controller
                 $this->getFlashBag()->add('danger', 'Identifiants invalide');
                 $errors['password'][] = "Le mot de passe ne correspond pas";
             }
-        } else {
-            $errors = $validator->getErrors();
         }
 
         template:
@@ -220,10 +209,9 @@ class UserController extends Controller
      */
     public function lostAction(Request $request)
     {
-        $validator = new LostValidator($request);
         $errors = [];
 
-        if ($request->request->has('form') && $validator->validate()) {
+        if ($request->request->has('form')) {
             $form = $request->request->get('form');
             $em = $this->getEntityManager();
             $repos = $em->getRepository(User::class);
@@ -289,46 +277,67 @@ class UserController extends Controller
     public function profileAction(Request $request)
     {
         $errors = [];
-        $ProfilePasswordValidator = new ProfilePasswordValidator($request);
-        $profileMailValidator = new MailValidator($request);
 
         if ($request->request->has('form') &&
-            $request->request->get('form')['btn'] === 'password' &&
-            $ProfilePasswordValidator->validate()) {
-            $errors = $ProfilePasswordValidator->getErrors();
-            $em = $this->getEntityManager();
+            $request->request->get('form')['btn'] === 'password') {
+            $form = $request->request->get('form');
 
-            $user = $this->getSession()->get('user');
-            $user->setPlainPassword($request->request->has('form')['password']);
-            $user->updatePassword();
+            if ($form['password'] === $form['passwordConfirm']) {
+                $validator = new Validation();
+                $em = $this->getEntityManager();
 
-            $em->persist($user);
-            $em->flush();
+                $user = $this->getSession()->get('user');
+                $user->setPlainPassword($form['password']);
+                $errors = $validator->validate($user);
 
-            $this->getFlashBag()->add(
-                'success',
-                'Changement de mot de passe réussi, par sécurité vous devez vous reconnecter'
-            );
+                if (count($errors) == 0) {
+                    $user->updatePassword();
 
-            return $this->disconnectAction();
+                    $em->persist($user);
+                    $em->flush();
+
+                    $this->getFlashBag()->add(
+                        'success',
+                        'Changement de mot de passe réussi, par sécurité vous devez vous reconnecter'
+                    );
+
+                    return $this->disconnectAction();
+                }
+            } else {
+                $this->getFlashBag()->add(
+                    'danger',
+                    'Les deux mots de passe ne correspondent pas'
+                );
+            }
         } else if ($request->request->has('form') &&
-        $request->request->get('form')['btn'] === 'mail' &&
-            $profileMailValidator->validate()) {
-            $errors = $profileMailValidator->getErrors();
-            $em = $this->getEntityManager();
+        $request->request->get('form')['btn'] === 'mail') {
+            $form = $request->request->get('form');
 
-            $user = $this->getSession()->get('user');
-            $user->setMail($request->request->has('form')['mail']);
+            if ($form['mail'] === $form['mailConfirm']) {
+                $validator = new Validation();
+                $em = $this->getEntityManager();
 
-            $em->persist($user);
-            $em->flush();
+                $user = $this->getSession()->get('user');
+                $user->setMail($form['mail']);
+                $errors = $validator->validate($user);
 
-            $this->getFlashBag()->add(
-                'success',
-                "Changement d'e-mail réussi, par sécurité vous devez vous reconnecter"
-            );
+                if (count($errors) == 0) {
+                    $em->persist($user);
+                    $em->flush();
 
-            return $this->disconnectAction();
+                    $this->getFlashBag()->add(
+                        'success',
+                        "Changement d'e-mail réussi, par sécurité vous devez vous reconnecter"
+                    );
+
+                    return $this->disconnectAction();
+                }
+            } else {
+                $this->getFlashBag()->add(
+                    'danger',
+                    'Les deux e-mail ne correspondent pas'
+                );
+            }
         }
 
         return $this->getTemplate()->renderResponse('@User/profile.html.twig', [

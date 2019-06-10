@@ -5,25 +5,15 @@
 {% block title %}Inscription d'un utilisateur{% endblock %}
 
 {% block body %}
-    {% set errors = [] %}
-
-    {% for error in form_errors %}
-        {% if error.propertyPath == 'login' %}
-            {% set errors = errors|merge({'login': error.message}) %}
-        {% elseif error.propertyPath == 'plainPassword' %}
-            {% set errors = errors|merge({'plainPassword': error.message}) %}
-        {% elseif error.propertyPath == 'mail' %}
-            {% set errors = errors|merge({'mail': error.message}) %}
-        {% endif %}
-    {% endfor %}
-
     <form action="{{ pathab('user_register') }}" method="POST">
         <div class="form-group">
             <label for="login">Nom d'utilisateur :</label>
             <input type="text" id="login" maxlength="50"
                    name="form[login]" class="form-control {% if errors.login is defined %} is-invalid {% endif %}"
                    value="{% if form.login is defined %}{{ form.login }}{% endif %}" required>
-            <div class="invalid-feedback">{{ errors.login }}</div>
+            {% for error in errors.login %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
@@ -31,7 +21,9 @@
             <input type="password" id="password" maxlength="50"
                    name="form[password]" class="form-control {% if errors.plainPassword is defined %} is-invalid {% endif %}"
                    required>
-            <div class="invalid-feedback">{{ errors.plainPassword }}</div>
+            {% for error in errors.plainPassword %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
@@ -39,7 +31,9 @@
             <input type="password" id="password_confirm" maxlength="50"
                    name="form[passwordConfirm]" class="form-control {% if errors.plainPassword is defined %} is-invalid {% endif %}"
                    required>
-            <div class="invalid-feedback">{{ errors.plainPassword }}</div>
+            {% for error in errors.plainPassword %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-group">
@@ -47,7 +41,9 @@
             <input type="email" id="mail" maxlength="50"
                    name="form[mail]" class="form-control {% if errors.mail is defined %} is-invalid {% endif %}"
                    value="{% if form.mail is defined %}{{ form.mail }}{% endif %}" required>
-            <div class="invalid-feedback">{{ errors.mail }}</div>
+            {% for error in errors.mail %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <button type="submit" class="btn btn-primary">S'inscrire</button>

@@ -7,32 +7,22 @@
 {% block body %}
     <form action="{{ pathab('user_profile') }}" method="POST">
         <div class="form-group">
-            <label for="old_password">Ancien mot de passe :</label>
-            <input type="password" id="password" maxlength="50"
-                   name="form[old_password]" class="form-control {% if errors.old_password is defined %} is-invalid {% endif %}"
-                   required>
-            {% for password in errors.old_password %}
-                <div class="invalid-feedback">{{ password }}</div>
-            {% endfor %}
-        </div>
-
-        <div class="form-group">
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" maxlength="50"
-                   name="form[password]" class="form-control {% if errors.password is defined %} is-invalid {% endif %}"
+                   name="form[password]" class="form-control {% if errors.plainPassword is defined %} is-invalid {% endif %}"
                    required>
-            {% for password in errors.password %}
-                <div class="invalid-feedback">{{ password }}</div>
+            {% for error in errors.plainPassword %}
+                <div class="invalid-feedback">{{ error }}</div>
             {% endfor %}
         </div>
 
         <div class="form-group">
-            <label for="password_confirm">Confirmer le mot de passe :</label>
-            <input type="password" id="password_confirm" maxlength="50"
-                   name="form[password_confirm]" class="form-control {% if errors.password is defined %} is-invalid {% endif %}"
+            <label for="passwordConfirm">Confirmer le mot de passe :</label>
+            <input type="password" id="passwordConfirm" maxlength="50"
+                   name="form[passwordConfirm]" class="form-control {% if errors.plainPassword is defined %} is-invalid {% endif %}"
                    required>
-            {% for password in errors.password_confirm %}
-                <div class="invalid-feedback">{{ password }}</div>
+            {% for error in errors.plainPassword %}
+                <div class="invalid-feedback">{{ error }}</div>
             {% endfor %}
         </div>
 
@@ -41,32 +31,22 @@
 
     <form action="{{ pathab('user_profile') }}" method="POST" class="mt-4">
         <div class="form-group">
-            <label for="mail">Ancien e-mail :</label>
-            <input type="email" id="mail" maxlength="50"
-                   name="form[old_mail]" class="form-control {% if errors.old_mail is defined %} is-invalid {% endif %}"
-                   value="{% if form.old_mail is defined %}{{ form.old_mail }}{% endif %}" required>
-            {% for mail in errors.old_mail %}
-                <div class="invalid-feedback">{{ mail }}</div>
-            {% endfor %}
-        </div>
-
-        <div class="form-group">
             <label for="password">E-mail :</label>
             <input type="email" id="ail" maxlength="50"
                    name="form[mail]" class="form-control {% if errors.mail is defined %} is-invalid {% endif %}"
                    value="{% if form.mail is defined %}{{ form.mail }}{% endif %}" required>
             {% for mail in errors.mail %}
-                <div class="invalid-feedback">{{ mail }}</div>
+                <div class="invalid-feedback">{{ error }}</div>
             {% endfor %}
         </div>
 
         <div class="form-group">
-            <label for="mail_confirm">Confirmer l'e-mail :</label>
-            <input type="email" id="mail_confirm" maxlength="50"
-                   name="form[mail_confirm]" class="form-control {% if errors.mail_confirm is defined %} is-invalid {% endif %}"
+            <label for="mailConfirm">Confirmer l'e-mail :</label>
+            <input type="email" id="mailConfirm" maxlength="50"
+                   name="form[mailConfirm]" class="form-control {% if errors.mail is defined %} is-invalid {% endif %}"
                    value="{% if form.mail is defined %}{{ form.mail }}{% endif %}" required>
-            {% for mail in errors.mail_confirm %}
-                <div class="invalid-feedback">{{ mail }}</div>
+            {% for mail in errors.mail %}
+                <div class="invalid-feedback">{{ error }}</div>
             {% endfor %}
         </div>
 
