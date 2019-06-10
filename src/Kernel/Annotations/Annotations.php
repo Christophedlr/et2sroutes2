@@ -51,9 +51,19 @@ class Annotations
             }
         }
 
-        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Length.php";
-        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Regex.php";
-        require_once __DIR__."/../../../vendor/symfony/validator/constraints/Email.php";
+        $scan = scandir(
+            __DIR__.'/../../../vendor/symfony/validator/constraints'
+        );
+
+        foreach ($scan as $index => $value) {
+            $pos = strrpos($value, '.')-9;
+
+            if (substr($value, $pos) === 'Validator.php') {
+                $name = __DIR__.
+                    '/../../../vendor/symfony/validator/constraints/'.substr($value, 0, $pos).'.php';
+                require_once $name;
+            }
+        }
 
         $this->container = $container;
         $this->defaultMessage = 'Unauthorized access, you are not admin';
