@@ -8,11 +8,13 @@ namespace Bundle\User\Controller;
 
 
 use Bundle\User\Entity\User;
+use Doctrine\DBAL\Logging\EchoSQLLogger;
 use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Kernel\Form\Validation\AbstractValidator;
 use Kernel\Mailer;
 use Kernel\Validation;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
@@ -338,8 +340,72 @@ class UserController extends Controller
                     'Les deux e-mail ne correspondent pas'
                 );
             }
+        } else if ($request->request->has('form') && $request->request->get('form')['btn'] === 'avatar') {
+            $form = $request->request->get('form');
+            $em = $this->getEntityManager();
+
+            /**
+             * @var $uploadedFile UploadedFile
+             */
+            $uploadedFile = $request->files->get('form')['uploadAvatar'];
+
+            if ($uploadedFile->getMimeType() !== 'image/png' && $uploadedFile->getMimeType() !== 'image/jpeg') {
+                $this->getFlashBag()->add(
+                    'danger',
+                    'Seules les images en PNG ou JPEG sont autorisées'
+                    );
+            } else {
+                $dimensions = getimagesize($uploadedFile->getPathname());
+
+                if ($dimensions[0] > 80) {
+                    $this->getFlashBag()->add(
+                        'danger',
+                        'La largeur doit être de 80 pixels au maximum'
+                    );
+
+                    goto template;
+                }
+
+                if ($dimensions[1] > 80) {
+                    $this->getFlashBag()->add(
+                        'danger',
+                        'La hauteur doit être de 80 pixels au maximum'
+                    );
+
+                    goto template;
+                }
+
+                $dir = __DIR__.'/../../../../web/upload/avatar';
+
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, true);
+                }
+
+                /**
+                 * @var $user User
+                 */
+                $user = $this->getSession()->get('user');
+
+                if (!empty($user->getAvatar())) {
+                    unlink($dir.'/'.$user->getAvatar());
+                }
+
+                $file = md5(uniqid()).'.'.$uploadedFile->guessExtension();
+                $uploadedFile->move($dir, $file);
+                $user->setAvatar($file);
+
+                $em->merge($user);
+                $em->flush();
+
+                $this->getFlashBag()->add(
+                  'success',
+                  'Votre avatar a été mis à jour avec succès, vous devez vous reconnecter'
+                );
+                return $this->disconnectAction();
+            }
         }
 
+        template:
         return $this->getTemplate()->renderResponse('@User/profile.html.twig', [
             'errors' => $errors
         ]);

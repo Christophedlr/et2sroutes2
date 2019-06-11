@@ -65,6 +65,22 @@ class User
     private $code;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true, unique=true)
+     */
+    private $avatar;
+
+    /**
+     * @var string
+     * @Assert\Length(max=255, maxMessage="Le lien ne peut dépasser les 255 caractères")
+     */
+    private $avatarLink;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default": false})
+     */
+    private $gravatar;
+
+    /**
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $active;
@@ -94,7 +110,9 @@ class User
             ->setAdmin(false)
             ->setRegisterDate(new \DateTime())
             ->setLastConnection(new \DateTime())
-            ->setActive(false);
+            ->setActive(false)
+            ->setGravatar(false)
+        ;
     }
 
     /**
@@ -294,6 +312,60 @@ class User
     public function setAdmin($admin)
     {
         $this->admin = $admin;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string $avatar
+     * @return User
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getGravatar()
+    {
+        return $this->gravatar;
+    }
+
+    /**
+     * @param bool $gravatar
+     * @return User
+     */
+    public function setGravatar($gravatar)
+    {
+        $this->gravatar = $gravatar;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatarLink(): string
+    {
+        return $this->avatarLink;
+    }
+
+    /**
+     * @param string $avatarLink
+     * @return User
+     */
+    public function setAvatarLink(string $avatarLink): User
+    {
+        $this->avatarLink = $avatarLink;
         return $this;
     }
 }
