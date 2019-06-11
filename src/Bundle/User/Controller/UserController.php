@@ -279,6 +279,10 @@ class UserController extends Controller
     public function profileAction(Request $request)
     {
         $errors = [];
+        /**
+         * @var $user User
+         */
+        $user = $this->getSession()->get('user');
 
         if ($request->request->has('form') &&
             $request->request->get('form')['btn'] === 'password') {
@@ -343,71 +347,85 @@ class UserController extends Controller
         } else if ($request->request->has('form') && $request->request->get('form')['btn'] === 'avatar') {
             $form = $request->request->get('form');
             $em = $this->getEntityManager();
+            $dir = __DIR__ . '/../../../../web/upload/avatar';
 
-            /**
-             * @var $uploadedFile UploadedFile
-             */
-            $uploadedFile = $request->files->get('form')['uploadAvatar'];
-
-            if ($uploadedFile->getMimeType() !== 'image/png' && $uploadedFile->getMimeType() !== 'image/jpeg') {
-                $this->getFlashBag()->add(
-                    'danger',
-                    'Seules les images en PNG ou JPEG sont autorisées'
-                    );
-            } else {
-                $dimensions = getimagesize($uploadedFile->getPathname());
-
-                if ($dimensions[0] > 80) {
-                    $this->getFlashBag()->add(
-                        'danger',
-                        'La largeur doit être de 80 pixels au maximum'
-                    );
-
-                    goto template;
-                }
-
-                if ($dimensions[1] > 80) {
-                    $this->getFlashBag()->add(
-                        'danger',
-                        'La hauteur doit être de 80 pixels au maximum'
-                    );
-
-                    goto template;
-                }
-
-                $dir = __DIR__.'/../../../../web/upload/avatar';
-
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                }
-
-                /**
-                 * @var $user User
-                 */
-                $user = $this->getSession()->get('user');
-
+            if (isset($form['gravatar'])) {
                 if (!empty($user->getAvatar())) {
-                    unlink($dir.'/'.$user->getAvatar());
+                    unlink($dir . '/' . $user->getAvatar());
                 }
 
-                $file = md5(uniqid()).'.'.$uploadedFile->guessExtension();
-                $uploadedFile->move($dir, $file);
-                $user->setAvatar($file);
-
+                $user->setAvatar(null)->setGravatar(true);
                 $em->merge($user);
                 $em->flush();
 
                 $this->getFlashBag()->add(
-                  'success',
-                  'Votre avatar a été mis à jour avec succès, vous devez vous reconnecter'
+                    'success',
+                    'Votre avatar a été mis à jour avec succès, vous devez vous reconnecter'
                 );
-                return $this->disconnectAction();
+
+                return $this->disconnectAction(
+
+                );
+            } else {
+                /**
+                 * @var $uploadedFile UploadedFile
+                 */
+                $uploadedFile = $request->files->get('form')['uploadAvatar'];
+
+                if ($uploadedFile->getMimeType() !== 'image/png' && $uploadedFile->getMimeType() !== 'image/jpeg') {
+                    $this->getFlashBag()->add(
+                        'danger',
+                        'Seules les images en PNG ou JPEG sont autorisées'
+                    );
+                } else {
+                    $dimensions = getimagesize($uploadedFile->getPathname());
+
+                    if ($dimensions[0] > 80) {
+                        $this->getFlashBag()->add(
+                            'danger',
+                            'La largeur doit être de 80 pixels au maximum'
+                        );
+
+                        goto template;
+                    }
+
+                    if ($dimensions[1] > 80) {
+                        $this->getFlashBag()->add(
+                            'danger',
+                            'La hauteur doit être de 80 pixels au maximum'
+                        );
+
+                        goto template;
+                    }
+
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+
+                    if (!empty($user->getAvatar())) {
+                        unlink($dir . '/' . $user->getAvatar());
+                    }
+
+                    $file = md5(uniqid()) . '.' . $uploadedFile->guessExtension();
+                    $uploadedFile->move($dir, $file);
+                    $user->setAvatar($file)->setGravatar(false);
+
+                    $em->merge($user);
+                    $em->flush();
+
+                    $this->getFlashBag()->add(
+                        'success',
+                        'Votre avatar a été mis à jour avec succès, vous devez vous reconnecter'
+                    );
+                    return $this->disconnectAction();
+                }
             }
         }
 
         template:
         return $this->getTemplate()->renderResponse('@User/profile.html.twig', [
-            'errors' => $errors
+            'errors' => $errors,
+            'gravatar' => ($user->getGravatar()) ? md5($user->getMail()) : '',
         ]);
     }
 

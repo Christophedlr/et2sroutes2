@@ -55,11 +55,22 @@
 
     <form action="{{ pathab('user_profile') }}" method="POST" enctype="multipart/form-data" class="mt-4">
         <div class="form-group">
-            <img src="{{ asset('upload/avatar/' ~ user.avatar) }}" alt="Avatar">
+            {% if user.gravatar == true %}
+                <img src="https://www.gravatar.com/avatar/{{ gravatar }}">
+            {% elseif user.avatar is not null %}
+                <img src="{{ asset('upload/avatar/' ~ user.avatar) }}">
+            {% else %}
+                Pas d'avatar
+            {% endif %}
         </div>
         <div class="form-group">
             <label for="uploadAvatar"> Uploader votre avatar:</label>
             <input type="file" id="uploadAvatar" name="form[uploadAvatar]" class="form-control">
+        </div>
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" value="" id="gravatar" name="form[gravatar]">
+            <label for="gravatar" class="form-check-label">Gravatar</label>
         </div>
 
         <button type="submit" class="btn btn-primary" name="form[btn]" value="avatar">Uploader l'avatar</button>
