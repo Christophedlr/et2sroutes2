@@ -126,6 +126,14 @@ try {
         ->addMethod('GET')
         ->addMethod('POST')
     ;
+
+    $routes[] = (new Route())
+        ->setName('contact')
+        ->setRoute('/contact')
+        ->setController('Bundle\\Base:ContactController:contactAction')
+        ->addMethod('GET')
+        ->addMethod('POST')
+    ;
 } catch (Exception $e) {
     return $e->getMessage();
 }
