@@ -21,6 +21,33 @@ $database['driver'] = $dbParams['database.driver'];
 $database['port'] = $dbParams['database.port'];
 $database['dbname'] = $dbParams['database.name'];
 
+require_once "vendor/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation.php";
+
+$scan = scandir(
+    'vendor/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation'
+);
+
+foreach ($scan as $index => $value) {
+    if (substr($value, strrpos($value, '.')) === '.php') {
+        var_dump($value);
+        require_once "vendor/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation/$value";
+    }
+}
+
+$scan = scandir(
+    'vendor/symfony/validator/constraints'
+);
+
+foreach ($scan as $index => $value) {
+    $pos = strrpos($value, '.')-9;
+
+    if (substr($value, $pos) === 'Validator.php') {
+        $name = 'vendor/symfony/validator/constraints/'.substr($value, 0, $pos).'.php';
+        require_once $name;
+    }
+}
+
+
 $setup = Setup::createAnnotationMetadataConfiguration(['src']);
 
 $em = EntityManager::create($database, $setup);
