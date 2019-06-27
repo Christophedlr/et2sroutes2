@@ -7,6 +7,7 @@
 namespace Kernel\TwigExtension;
 
 
+use Kernel\BBCode\BBCodeParser;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
@@ -38,6 +39,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('path', [$this, 'path']),
             new TwigFunction('pathab', [$this, 'absolute']),
             new TwigFunction('controller', [$this, 'controller'], ['is_safe' => ['html']]),
+            new TwigFunction('parser', [$this, 'parserBBCodeAndSmileys'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -114,5 +116,15 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
         }
 
         return $response;
+    }
+
+    public function parserBBCodeAndSmileys(string $text): string
+    {
+        $newText = nl2br($text);
+
+        $parser = new BBCodeParser();
+        $newText = $parser->parser($newText);
+
+        return $newText;
     }
 }
