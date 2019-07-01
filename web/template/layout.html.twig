@@ -10,6 +10,7 @@
               crossorigin="anonymous">
         <link rel="stylesheet" href="{{ asset('css/general.css') }}">
         <link rel="stylesheet" href="{{ asset('css/octicons.css') }}">
+        {% block stylesheet %}{% endblock %}
         <title>{% block title %}{% endblock %} - ETS2Routes</title>
     </head>
     <body class="container-fluid">
@@ -45,5 +46,6 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
                 integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
                 crossorigin="anonymous"></script>
+        {% block javascript %}{% endblock %}
     </body>
 </html>

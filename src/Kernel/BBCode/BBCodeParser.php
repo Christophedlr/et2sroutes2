@@ -30,18 +30,18 @@ class BBCodeParser
         $newText = preg_replace('#\[color=(.+)\](.+)\[\/color\]#Ui', '<span style="color: $1">$2</span>', $newText);
 
         $newText = preg_replace(
-            '#\[list\](.+)\[\/list\]#Usi',
+            '#\[ul\](.+)\[\/ul\]#Usi',
             '<ul>$1</ul>',
             $newText
         );
 
         $newText = preg_replace(
-            '#\[list=([1|A|a|I|i])\](.+)\[\/list\]#Usi',
-            '<ol type="$1">$2</ol>',
+            '#\[ol](.+)\[\/ol\]#Usi',
+            '<ol>$1</ol>',
             $newText
         );
 
-        $newText = preg_replace('#\[\*\](.+)#i','<li>$1</li>', $newText);
+        $newText = preg_replace('#\[li\](.+)\[\/li\]#Ui','<li>$1</li>', $newText);
 
         $newText = preg_replace(
             '#\[left\](.+)\[\/left\]#i',
