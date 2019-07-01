@@ -56,10 +56,10 @@ class NewsController extends Controller
 
             $news = new News();
             $news
-                ->setName($form['name'])
+                ->setName(trim($form['name']))
                 ->setCategory($category)
                 ->setAuthor($user)
-                ->setText($form['text']);
+                ->setText(trim($form['text']));
 
             $em = $this->getEntityManager();
             $em->merge($news);
@@ -113,10 +113,10 @@ class NewsController extends Controller
             $category = $repos->find($form['category']);
 
             $news
-                ->setName($form['name'])
+                ->setName(trim($form['name']))
                 ->setCategory($category)
-                ->setText($form['text'])
-                ->setSlug($form['slug']);
+                ->setText(trim($form['text']))
+                ->setSlug(trim($form['slug']));
 
             $em = $this->getEntityManager();
             $em->persist($news);

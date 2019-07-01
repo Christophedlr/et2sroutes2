@@ -10,6 +10,23 @@
 
 {% block title %}Modification d'une news{% endblock %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('js/sceditor/themes/default.min.css') }}" />
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('js/sceditor/sceditor.min.js') }}"></script>
+    <script src="{{ asset('js/sceditor/formats/bbcode.js') }}"></script>
+
+    <script>
+        sceditor.create(document.getElementById('text'), {
+            format: 'bbcode',
+            style: '{{ asset('js/sceditor/themes/content/default.min.css') }}',
+            toolbar: 'bold,italic,underline,strike|left,center,right,justify|color,bulletlist,orderedlist|link,image,quote,source'
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
     <form action="{{ pathab('news_admin_change', {'id': id}) }}" method="POST">
         <div class="form-group">
