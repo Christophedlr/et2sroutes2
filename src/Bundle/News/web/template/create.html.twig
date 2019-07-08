@@ -58,10 +58,11 @@
         <div class="form-group">
             <label for="text">News :</label>
             <div class="row">
-            <textarea name="form[text]" id="text" cols="30" rows="6" class="form-control">{% if form.text is defined %}{{ form.text }}{% endif %}</textarea>
-            {% for text in errors.text %}
-                <div class="invalid-feedback">{{ text }}</div>
-            {% endfor %}
+                <textarea name="form[text]" id="text" cols="30" rows="6" class="form-control">{% if form.text is defined %}{{ form.text }}{% endif %}</textarea>
+                {% for text in errors.text %}
+                    <div class="invalid-feedback">{{ text }}</div>
+                {% endfor %}
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Créer</button>
