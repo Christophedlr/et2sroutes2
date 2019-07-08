@@ -10,6 +10,7 @@
               crossorigin="anonymous">
         <link rel="stylesheet" href="{{ asset('css/general.css') }}">
         <link rel="stylesheet" href="{{ asset('css/octicons.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/sceditor/themes/default.min.css') }}" />
         {% block stylesheet %}{% endblock %}
         <title>{% block title %}{% endblock %} - ETS2Routes</title>
     </head>
@@ -46,6 +47,15 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
                 integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
                 crossorigin="anonymous"></script>
+        <script src="{{ asset('js/sceditor/sceditor.min.js') }}"></script>
+        <script src="{{ asset('js/sceditor/formats/bbcode.js') }}"></script>
         {% block javascript %}{% endblock %}
+        <script>
+            sceditor.create(document.getElementById('text'), {
+                format: 'bbcode',
+                style: '{{ asset('js/sceditor/themes/content/default.min.css') }}',
+                toolbar: 'bold,italic,underline,strike|left,center,right,justify|color,bulletlist,orderedlist|link,image,quote,source'
+            });
+        </script>
     </body>
 </html>
