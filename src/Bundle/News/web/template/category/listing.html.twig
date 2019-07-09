@@ -2,10 +2,21 @@
 
 {% set title = 'Liste des catégories' %}
 
+{% set breadcrumb = [
+    {"name": 'Administration', 'link': pathab('dashboard_admin') },
+    {'name': 'News', 'link': pathab('news_admin_list') },
+    {'name': 'Catégories'}
+] %}
+
 {% block title %}Liste catégories{% endblock %}
 
 {% block body %}
-    <a href="{{ pathab('news_cat_admin_add') }}" class="btn btn-primary mb-4">Ajouter</a>
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a href="{{ pathab('news_admin_list') }}" class="nav-link">Liste des news</a></li>
+        <li class="nav-item"><a href="{{ pathab('news_cat_admin_list') }}" class="nav-link active">Liste des catégories</a></li>
+    </ul>
+
+    <a href="{{ pathab('news_cat_admin_add') }}" class="btn btn-primary mb-4 mt-4">Ajouter</a>
 
     <table class="table table-bordered table-hover">
         <thead class="text-center">

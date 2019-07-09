@@ -10,7 +10,12 @@
 {% block title %}Liste news{% endblock %}
 
 {% block body %}
-    <a href="{{ pathab('news_admin_add') }}" class="btn btn-primary mb-4">Ajouter</a>
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a href="{{ pathab('news_admin_list') }}" class="nav-link active">Liste des news</a></li>
+        <li class="nav-item"><a href="{{ pathab('news_cat_admin_list') }}" class="nav-link">Liste des catégories</a></li>
+    </ul>
+
+    <a href="{{ pathab('news_admin_add') }}" class="btn btn-primary mb-4 mt-4">Ajouter</a>
 
     <table class="table table-bordered table-hover">
         <thead class="text-center">

@@ -12,6 +12,7 @@ use Bundle\News\Validator\Category\ChangeValidator;
 use Bundle\News\Validator\Category\CreateValidator;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Kernel\Annotations\Annotations\Security;
 use Kernel\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
