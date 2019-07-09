@@ -6,6 +6,9 @@
 
 return [
     'vars.uri' => '',
+    'captcha.solvemedia.pubkey' => '',
+    'captcha.solvemedia.privkey' => '',
+    'captcha.solvemedia.hashkey' => '',
     'mailer.host' => '',
     'mailer.port' => 25,
     'mailer.user' => '',
