@@ -31,6 +31,8 @@ class UserController extends Controller
      */
     public function registerAction(Request $request)
     {
+        require_once __DIR__.'/../../../../solvemedialib.php';
+
         $errors = [];
 
         if ($request->request->has('form')) {
@@ -48,6 +50,20 @@ class UserController extends Controller
                 $errors = $validator->validate($user);
 
                 if (count($errors) === 0) {
+                    /**
+                     * Check if the Solvemedia captcha is valid
+                     */
+                    if (!solvemedia_check_answer(
+                        $this->container->getParameter('captcha.solvemedia.privkey'),
+                        $_SERVER['REMOTE_ADDR'],
+                        $_POST['adcopy_challenge'],
+                        $_POST['adcopy_response'],
+                        $this->container->getParameter('captcha.solvemedia.hashkey')
+                    )->is_valid) {
+                        $this->getFlashBag()->add('danger', 'Captcha invalide');
+                        goto template;
+                    }
+
                     $em = $this->getEntityManager();
                     $em->persist($user);
                     $em->flush();
@@ -82,9 +98,19 @@ class UserController extends Controller
             }
         }
 
+        template:
         return $this->getTemplate()->renderResponse('@User/register.html.twig', [
             'errors' => $errors,
             'form' => $request->request->get('form', []),
+            /**
+             * Display Solvemedia captcha
+             */
+            'captcha' => solvemedia_get_html(
+                $this->container->getParameter(
+                    'captcha.solvemedia.pubkey'),
+                null,
+                true
+            ),
         ]);
     }
 
